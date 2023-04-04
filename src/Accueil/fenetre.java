@@ -14,10 +14,10 @@ public class fenetre extends JFrame {
     private final String  passwd = "";
 
     public fenetre() {
-        super("Fenetre minimaliste");
+        super("Application Messagerie");
 
         // Définit la taille de la fenêtre
-        setSize(300, 150);
+        setSize(1920, 1080);
 
         // Centre la fenêtre au milieu de l'écran
         setLocationRelativeTo(null);
