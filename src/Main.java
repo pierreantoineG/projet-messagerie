@@ -1,6 +1,8 @@
+import Accueil.fenetre;
+
 public class Main {
     public static void main(String[] args){
-        System.out.println("caca");
+        fenetre fenetre = new fenetre();
 
     }
 }
