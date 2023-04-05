@@ -193,7 +193,7 @@ public class fenetre extends JFrame {
             JFrame userFrame = new JFrame("Informations de l'utilisateur");
 
             // Définir la taille de la fenêtre
-            userFrame.setSize(400, 200);
+            userFrame.setSize(1920 , 1080);
 
             // Centre la fenêtre au milieu de l'écran
             userFrame.setLocationRelativeTo(null);
