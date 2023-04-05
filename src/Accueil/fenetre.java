@@ -235,7 +235,7 @@ public class fenetre extends JFrame {
         }
     }
 
-//Register
+//Register pour user
     private boolean registerUser(String firstName, String lastName, String email, String username, char[] password) {
         boolean success = false;
 
