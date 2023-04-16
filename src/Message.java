@@ -1,59 +1,47 @@
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Message {
-    private int state;
+    private Integer id;
     private String content;
-    private User user_id;
-    private LocalDate date;
-    private LocalDateTime heure;
+    private Client client_id;
+    private LocalDateTime timestamp;
 
-    public Message(int state, String content, User user, LocalDate date, LocalDateTime heure){
-        this.state = state;
+    public Message(Integer id, String content, Client client, LocalDateTime timestamp){
+        this.id = id;
         this.content = content;
-        this.user_id = user;
-        this.date = date;
-        this.heure = heure;
+        this.client_id = client;
+        this.timestamp = timestamp;
     }
 
-    public int getState() { return state; }
+    public Integer getId() { return id; }
 
     public String getContent() { return content; }
 
-    public LocalDate getDate() { return date; }
+    public Client getUser() { return client_id; }
 
-    public User getUser() { return user_id; }
+    public LocalDateTime getTimestamp() { return timestamp; }
 
-    public LocalDateTime getHeure() { return heure; }
+
+    public void setId(Integer id) { this.id = id; }
 
     public void setContent(String content) {
         this.content = content;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public void setHeure(LocalDateTime heure) {
-        this.heure = heure;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public void setUser(User user) {
-        this.user_id = user;
+    public void setUser(Client client) {
+        this.client_id = client;
     }
 
     @Override
     public String toString() {
         return "Message{" +
-                "state=" + state +
                 ", content='" + content + '\'' +
-                ", user=" + user_id +
-                ", date=" + date +
-                ", heure=" + heure +
+                ", user=" + client_id +
+                ", timestamp =" + timestamp +
                 '}';
     }
 }

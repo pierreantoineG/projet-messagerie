@@ -1,11 +1,11 @@
-public class Adminirator extends User {
+/*public class Adminirator extends Client {
     boolean ban;
-    Serveur serveur;
+    Server server;
 
 
-    public Adminirator(boolean ban, Serveur serveur, Integer id, String first_name, String last_name, String username, String password, String email, int state, Type type) {
-        super(id, first_name, last_name, username, password, email, state, type);
+    public Adminirator(boolean ban, Server server, Integer id, String first_name, String last_name, String username, String password, String email, int state, Type type) {
+        super(id, first_name, last_name, username, password, email, type);
         this.ban = ban;
-        this.serveur = serveur;
+        this.server = server;
     }
-}
+}*/

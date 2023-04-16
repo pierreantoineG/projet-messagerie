@@ -1,14 +1,22 @@
+import java.util.List;
+
 public interface UserDao {
 
-    public User getById(int id);
+    Client getById(int id);
 
-    void add(User user);
+    void add(Client client);
 
-    public void save(User user);
+   void save(Client client);
 
-    public void update(User user);
+    void update(Client client);
 
-    public void delete(User user);
+    void delete(Client client);
+
+    Client getByUsername(String username);
+
+    Client create (Client client);
+
+    List<Client> getUsers();
 }
 
 
