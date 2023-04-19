@@ -299,7 +299,6 @@ public class fenetre extends JFrame {
             e.printStackTrace();
         }
     }
-
     private boolean registerUser(String firstName, String lastName, String email, String username, char[] password) {
         boolean success = false;
         Connection connection = null;
