@@ -1,6 +1,9 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +26,22 @@ public class Server {
     }*/
 
 
-    public void startServeur() {
+    public void startServeur() throws RuntimeException {
         try {
+             String url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
+              String login = "pgloulou";
+              String  passwd = "Malouise17";
+
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+
+            Connection connection = DriverManager.getConnection(url, login, passwd);
+
+            System.out.println("Good connection!");
+
+
+
+
+
             while (!serverSocket.isClosed()) {
                 Socket socket = serverSocket.accept();
                 System.out.println("A new client is connected !");
@@ -33,7 +50,9 @@ public class Server {
                 Thread thread = new Thread(clientHandler);
                 thread.start();
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

@@ -1,7 +1,9 @@
 package Accueil;
 
+import java.sql.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.UnsupportedEncodingException;
@@ -12,15 +14,15 @@ import java.util.Base64;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Set;
+import javax.swing.border.Border;
 import javax.xml.*;
 
 
 public class fenetre extends JFrame {
-
     // Les informations de connexion à la base de données
-    private final String url = "jdbc:mysql://localhost/testprojet";
-    private final String login = "root";
-    private final String  passwd = "";
+    private final String url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
+    private final String login = "pgloulou";
+    private final String  passwd = "Malouise17";
 
     public fenetre() {
         super("Application Messagerie");
@@ -154,7 +156,6 @@ public class fenetre extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 ///CHANGER LES VALEURS PAR DEFAUT PAR LES VALEURS DU REGISTER
-
     private boolean isValidUser(String username, char[] password) {
         try {
             // Récupérer le mot de passe haché de l'utilisateur à partir de la base de données
@@ -187,11 +188,6 @@ public class fenetre extends JFrame {
             return false;
         }
     }
-
-
-
-
-
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
@@ -202,8 +198,6 @@ public class fenetre extends JFrame {
         }
         return new String(hexChars);
     }
-
-
     private void displayUserInformation(String username) {
         try {
             // Établir la connexion avec la base de données
@@ -257,12 +251,54 @@ public class fenetre extends JFrame {
 
             // Afficher la fenêtre
             userFrame.setVisible(true);
+/*
+            userFrame.getContentPane().add(userPanel);
+            displayAllMessages(userPanel);
+
+// Créer le champ de saisie de message et le bouton "Envoyer"
+            JTextField messageField = new JTextField(20);
+            JButton sendButton = new JButton("Envoyer");
+
+            userPanel = new JPanel(new BorderLayout());
+            userPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            messageField = new JTextField();
+            messageField.setPreferredSize(new Dimension(300, 50));
+            userPanel.add(messageField, BorderLayout.CENTER);
+
+            sendButton = new JButton("Envoyer");
+            sendButton.setPreferredSize(new Dimension(100, 50));
+            userPanel.add(sendButton, BorderLayout.EAST);
+
+            getContentPane().add(userPanel);
+
+            pack();
+            setLocationRelativeTo(null);
+            setVisible(true);
+
+            JPanel finalUserPanel = userPanel;
+            JTextField finalMessageField = messageField;
+            sendButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String messageContent = finalMessageField.getText();
+                    sendMessage(messageContent, username);
+
+                    displayLastMessage(finalUserPanel);
+                    // Actualiser l'affichage des messages
+                    displayAllMessages(finalUserPanel);
+                    finalMessageField.setText("");
+                    userFrame.getContentPane().revalidate(); // Actualiser la fenêtre
+                    userFrame.getContentPane().repaint();
+                }
+
+            });
+
+*/
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 
     private boolean registerUser(String firstName, String lastName, String email, String username, char[] password) {
         boolean success = false;
@@ -315,6 +351,141 @@ public class fenetre extends JFrame {
             }
         }
         return success;
+    }
+
+    private void displayAllMessages(JPanel messagesPanel) {
+        try {
+            // Établir la connexion avec la base de données
+            Connection connection = DriverManager.getConnection(url, login, passwd);
+
+            // Préparer la requête SQL pour récupérer tous les messages
+            String query = "SELECT users.username, MESSAGE.content "
+                    + "FROM users "
+                    + "JOIN message ON users.id = MESSAGE.user_id";
+
+            // Exécuter la requête SQL
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            // Créer un nouveau JPanel pour contenir tous les messages
+            JPanel allMessagesPanel = new JPanel();
+            allMessagesPanel.setLayout(new BoxLayout(allMessagesPanel, BoxLayout.Y_AXIS));
+            allMessagesPanel.setBackground(Color.BLUE);
+            allMessagesPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            // Parcourir le résultat de la requête et ajouter les messages dans des étiquettes
+            while (resultSet.next()) {
+                String username = resultSet.getString("username");
+                String content = resultSet.getString("content");
+
+                // Créer un nouveau JPanel pour chaque message
+                JPanel messagePanel = new JPanel();
+                messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+                messagePanel.setBackground(Color.WHITE);
+                messagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1, true));
+                messagePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+                // Ajouter le nom d'utilisateur au messagePanel
+                JLabel usernameLabel = new JLabel("Nom d'utilisateur: " + username);
+                usernameLabel.setForeground(Color.BLACK);
+                usernameLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+                messagePanel.add(usernameLabel);
+
+                // Ajouter le contenu du message au messagePanel
+                JLabel contentLabel = new JLabel(content);
+                contentLabel.setForeground(Color.WHITE);
+                contentLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+                messagePanel.add(contentLabel);
+
+                // Ajouter le messagePanel à allMessagesPanel
+                allMessagesPanel.add(messagePanel);
+
+                // Ajouter un espace de 100 pixels entre chaque message
+                allMessagesPanel.add(Box.createRigidArea(new Dimension(0, 100)));
+            }
+
+            // Fermer la connexion avec la base de données
+            resultSet.close();
+            statement.close();
+            connection.close();
+
+            // Ajouter le panel contenant tous les messages à un JScrollPane
+            JScrollPane scrollPane = new JScrollPane(allMessagesPanel);
+
+            // Ajouter le JScrollPane au messagesPanel passé en paramètre
+            messagesPanel.add(scrollPane);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void displayLastMessage(JPanel messagesPanel) {
+        try {
+            // Établir la connexion avec la base de données
+            Connection connection = DriverManager.getConnection(url, login, passwd);
+
+            // Préparer la requête SQL pour récupérer le dernier message
+            String query = "SELECT TOP 1 users.username, message.content "
+                    + "FROM users "
+                    + "JOIN message ON users.id = message.user_id "
+                    + "ORDER BY message.id DESC";
+
+            // Exécuter la requête SQL
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+
+            // Vérifier si un résultat est retourné
+            if (resultSet.next()) {
+                String username = resultSet.getString("username");
+                String content = resultSet.getString("content");
+                JLabel usernameLabel = new JLabel("Nom d'utilisateur: " + username);
+                JLabel contentLabel = new JLabel("Contenu: " + content);
+                // Ajouter les étiquettes dans le panneau
+                messagesPanel.add(usernameLabel);
+                messagesPanel.add(contentLabel);
+            }
+
+            // Fermer la connexion avec la base de données
+            resultSet.close();
+            statement.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    private void sendMessage(String messageContent, String username) {
+        try {
+            // Établir la connexion avec la base de données
+            Connection connection = DriverManager.getConnection(url, login, passwd);
+
+            // Préparer la requête SQL pour insérer le message dans la base de données
+            String query = "INSERT INTO message (user_id, content) VALUES (?, ?)";
+            // Préparer la requête SQL pour récupérer les informations de l'utilisateur dans la table "users"
+            String query_id = "SELECT id FROM users WHERE username = ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement_id = connection.prepareStatement(query_id);
+
+            statement_id.setString(1, username);
+            ResultSet resultSet = statement_id.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+
+                statement.setInt(1, id);
+            }
+
+            statement.setString(2, messageContent);
+            statement.executeUpdate();
+
+            // Fermer la connexion avec la base de données
+            statement.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
