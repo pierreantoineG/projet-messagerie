@@ -1,5 +1,4 @@
 package Accueil;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -23,9 +22,9 @@ import javax.xml.*;
 public class fenetre extends JFrame {
 
     // Les informations de connexion à la base de données
-    private final String url = "jdbc:mysql://localhost/testprojet";
-    private final String login = "root";
-    private final String  passwd = "";
+    private final String url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
+    private final String login = "pgloulou";
+    private final String  passwd = "Malouise17";
 
     public fenetre() {
         super("Application Messagerie");

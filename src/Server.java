@@ -8,7 +8,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server {
+    public Server() {
+        this.url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
+        this.login = "pgloulou";
+        this.passwd = "Malouise17";
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPasswd() {
+        return passwd;
+    }
+
     //private UserDao userDao;
+    private String url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
+    private String login = "pgloulou";
+    private String  passwd = "Malouise17";
+
     private ServerSocket serverSocket;
 
     public Server(ServerSocket serverSocket) {
@@ -28,9 +50,6 @@ public class Server {
 
     public void startServeur() throws RuntimeException {
         try {
-             String url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
-              String login = "pgloulou";
-              String  passwd = "Malouise17";
 
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
