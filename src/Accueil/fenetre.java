@@ -219,10 +219,10 @@ public class fenetre extends JFrame {
                     }
                     else {
                         // Mettre à jour lastTimeConnection dans la base de données
-                        PreparedStatement updateLastTimeConnection = connection.prepareStatement(
-                                "UPDATE users SET lastTimeConnection = CURRENT_TIMESTAMP WHERE username = ?");
-                        updateLastTimeConnection.setString(1, username);
-                        updateLastTimeConnection.executeUpdate();
+                        //PreparedStatement updateLastTimeConnection = connection.prepareStatement(
+                               // "UPDATE users SET lastTimeConnection = CURRENT_TIMESTAMP WHERE username = ?");
+                        //updateLastTimeConnection.setString(1, username);
+                        //updateLastTimeConnection.executeUpdate();
                     }
                     return role;
                 }
@@ -497,9 +497,6 @@ public class fenetre extends JFrame {
             e.printStackTrace();
         }
     }
-
-
-
 
 
     private boolean registerUser(String firstName, String lastName, String email, String username, char[] password, int role) {
