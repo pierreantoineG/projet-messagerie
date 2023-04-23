@@ -1,4 +1,6 @@
 import Accueil.fenetre;
+import View.*;
+import Controller.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
