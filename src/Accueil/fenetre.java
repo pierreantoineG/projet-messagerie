@@ -190,7 +190,7 @@ public class fenetre extends JFrame {
             e.printStackTrace();
         }
         return role;
-    }
+    }//
     private int isValidUser(String username, char[] password) {
         int role = -1;
         try {
