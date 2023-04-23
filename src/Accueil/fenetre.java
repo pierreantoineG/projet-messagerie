@@ -217,6 +217,13 @@ public class fenetre extends JFrame {
                         JOptionPane.showMessageDialog(null, "Votre compte a été banni.", "Erreur", JOptionPane.ERROR_MESSAGE);
                         return -1;
                     }
+                    else {
+                        // Mettre à jour lastTimeConnection dans la base de données
+                        PreparedStatement updateLastTimeConnection = connection.prepareStatement(
+                                "UPDATE users SET lastTimeConnection = CURRENT_TIMESTAMP WHERE username = ?");
+                        updateLastTimeConnection.setString(1, username);
+                        updateLastTimeConnection.executeUpdate();
+                    }
                     return role;
                 }
             }
