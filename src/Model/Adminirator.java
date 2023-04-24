@@ -1,4 +1,4 @@
-/*public class Adminirator extends Client {
+/*public class Adminirator extends Model.Client {
     boolean ban;
     Server server;
 

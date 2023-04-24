@@ -12,14 +12,14 @@ import java.util.List;
     }
 
     @Override
-    public Client getById(int id) {
-        Client client = null;
+    public Model.Client getById(int id) {
+        Model.Client client = null;
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE id = ?");
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                client = new Client(client.getId(), client.getFirst_name(), client.getLast_name(), client.getUsername(), client.getPassword(), client.getEmail(), client.getState(), client.getType());
+                client = new Model.Client(client.getId(), client.getFirst_name(), client.getLast_name(), client.getUsername(), client.getPassword(), client.getEmail(), client.getState(), client.getType());
                 client.setId(rs.getInt("id"));
                 client.setUsername(rs.getString("username"));
                 client.setPassword(rs.getString("password"));
@@ -31,7 +31,7 @@ import java.util.List;
     }
 
     @Override
-    public void save(Client client) {
+    public void save(Model.Client client) {
         try {
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?)");
             stmt.setString(1, client.getUsername());
@@ -43,7 +43,7 @@ import java.util.List;
     }
 
     @Override
-    public void update(Client client) {
+    public void update(Model.Client client) {
         try {
             PreparedStatement stmt = conn.prepareStatement("UPDATE users SET username = ?, password = ? WHERE id = ?");
             stmt.setString(1, client.getUsername());
@@ -57,7 +57,7 @@ import java.util.List;
 
 
     @Override
-    public void delete(Client client) {
+    public void delete(Model.Client client) {
         try {
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?");
             stmt.setInt(1, client.getId());
@@ -68,18 +68,18 @@ import java.util.List;
     }
 
     @Override
-    public void add(Client client) {
+    public void add(Model.Client client) {
        save(client);
     }
     @Override
-    public Client getByUsername(String username) {
-        Client client = null;
+    public Model.Client getByUsername(String username) {
+        Model.Client client = null;
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                client = new Client(client.getId(), client.getFirst_name(), client.getLast_name(), client.getUsername(), client.getPassword(), client.getEmail(), client.getState(), client.getType());
+                client = new Model.Client(client.getId(), client.getFirst_name(), client.getLast_name(), client.getUsername(), client.getPassword(), client.getEmail(), client.getState(), client.getType());
                 client.setId(rs.getInt("id"));
                 client.setUsername(rs.getString("username"));
                 client.setPassword(rs.getString("password"));
@@ -91,7 +91,7 @@ import java.util.List;
     }
 
     @Override
-    public Client create(Client client) {
+    public Model.Client create(Model.Client client) {
         try {
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (first_name, last_name, username, password, email, type) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, client.getFirst_name());
@@ -114,8 +114,8 @@ import java.util.List;
         }
     }
     @Override
-    public List<Client> getUsers() {
-        List<Client> clientList = new ArrayList<>();
+    public List<Model.Client> getUsers() {
+        List<Model.Client> clientList = new ArrayList<>();
 
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users");
@@ -133,7 +133,7 @@ import java.util.List;
                 String typeString = rs.getString("type");
                 Type type = Type.(int)(typeString);
 
-                Client client = new Client(id, firstName, lastName, username, password, email, stateuser, type);
+                Model.Client client = new Model.Client(id, firstName, lastName, username, password, email, stateuser, type);
                 clientList.add(client);
             }
 

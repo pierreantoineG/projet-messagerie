@@ -1,4 +1,5 @@
-package Accueil;
+package View;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -75,19 +76,19 @@ public class fenetre extends JFrame {
                 formPanel.add(passwordField);
                 int result = JOptionPane.showConfirmDialog(null, formPanel, "Login",
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-                if (result == JOptionPane.OK_OPTION) {
-                    String username = usernameField.getText();
+                if (result == JOptionPane.OK_OPTION) { // TODO: Action lorsque j'appuie sur mon bouton login
+                    /*String username = usernameField.getText();
                     char[] password = passwordField.getPassword();
-                    int userRole = isValidUser(username, password);
+                    int userRole = isValidUser(username, password); // TODO: Dans cette fonction on vérifie que l'utilisateur existe
                     if (userRole != -1) {
                         if (userRole == 1 || userRole == 2) { // Si l'utilisateur est un admin (1) ou un modérateur (2)
-                            showAdminModeratorWindow();
+                            showAdminModeratorWindow();  // TODO: Relier au chatView modérateur ou admin
                         } else {
-                            displayUserInformation(username);
+                            displayUserInformation(username); // TODO: Relier au chatView classique
                         }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Nom d'utilisateur ou mot de passe invalide.");
-                    }
+                        JOptionPane.showMessageDialog(null, "Nom d'utilisateur ou mot de passe invalide.");  // TODO: Créer une fenetre d'alerte lorsque l'utilisateur n'existe pas
+                    }*/
                 }
             }
         });
@@ -217,13 +218,13 @@ public class fenetre extends JFrame {
                         JOptionPane.showMessageDialog(null, "Votre compte a été banni.", "Erreur", JOptionPane.ERROR_MESSAGE);
                         return -1;
                     }
-                    else {
+                    /*else {
                         // Mettre à jour lastTimeConnection dans la base de données
                         //PreparedStatement updateLastTimeConnection = connection.prepareStatement(
                                // "UPDATE users SET lastTimeConnection = CURRENT_TIMESTAMP WHERE username = ?");
                         //updateLastTimeConnection.setString(1, username);
                         //updateLastTimeConnection.executeUpdate();
-                    }
+                    }*/
                     return role;
                 }
             }

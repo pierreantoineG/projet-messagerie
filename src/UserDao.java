@@ -1,3 +1,5 @@
+import Model.Client;
+
 import java.util.List;
 
 public interface UserDao {

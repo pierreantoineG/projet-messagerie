@@ -30,7 +30,11 @@ public class LoginView extends JFrame {
     JLabel handleRegister = new JLabel("Handle");
     JLabel passwordRegister = new JLabel("Password");
     private JButton registerButton = new JButton("Register");
+    private JPanel panelLog = new JPanel();
+    private JPanel panelRegister = new JPanel();
     private JPanel currentPanel;
+    private ImageIcon imageIconReturnBlackResize;
+    private ImageIcon imageIconReturnWhiteResize;
 
     //    private String pseudo = handleField.getText();
 //    private String mdp = Arrays.toString(passwordField.getPassword());
@@ -89,16 +93,15 @@ public class LoginView extends JFrame {
         setButton(signUpButton, 20);
 
         //création du panel qui va contenir tous les labels
-        JPanel panelLog = new JPanel();
         panelLog.setLayout(new SpringLayout());
         panelLog.setBackground(new Color(0, 187, 249));
 
         //initialisation des labels contenant les images et les textes nécessaires
-        ImageIcon imageIcon = new ImageIcon("images/LogoTexte2.png");
+        ImageIcon imageIcon = new ImageIcon("Icons/LogoTexte2.png");
         Image image = imageIcon.getImage();
         JLabel labelLogo = new JLabel(new ImageIcon(image));
 
-        ImageIcon fondLogin = new ImageIcon("images/Fond login.png");
+        ImageIcon fondLogin = new ImageIcon("Icons/Fond login.png");
         Image imgFondLog = fondLogin.getImage();
         JLabel labelFondLog1 = new JLabel(new ImageIcon(imgFondLog));
         JLabel labelFondLog2 = new JLabel(new ImageIcon(imgFondLog));
@@ -106,20 +109,11 @@ public class LoginView extends JFrame {
         setFieldWithText(handleField, handle);
         setFieldWithText(passwordField, password);
 
-        ImageIcon imageIconBtn = new ImageIcon("images/Fond Bouton Login.png");
+        ImageIcon imageIconBtn = new ImageIcon("Icons/Fond Bouton Login.png");
         ImageIcon imageIconBtnResize = new ImageIcon(imageIconBtn.getImage().getScaledInstance(465, 131, Image.SCALE_SMOOTH));
         Image fondBtn = imageIconBtnResize.getImage();
         JLabel labelBtn = new JLabel(new ImageIcon(fondBtn));
 
-        loginButton.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                loginButton.setForeground(Color.WHITE);
-            }
-
-            public void mouseExited(MouseEvent e) {
-                loginButton.setForeground(Color.BLACK);
-            }
-        });
         setButton(loginButton, 25);
         loginButton.setPreferredSize(new Dimension(402, 70));
 
@@ -181,7 +175,6 @@ public class LoginView extends JFrame {
 
         // TODO ---------------------------------------- 2e panel ------------------------------------------------//
 
-        JPanel panelRegister = new JPanel();
         panelRegister.setLayout(new SpringLayout());
         panelRegister.setBackground(new Color(0, 187, 249));
 
@@ -203,24 +196,16 @@ public class LoginView extends JFrame {
         setFieldWithText(handleFieldRegister, handleRegister);
         setFieldWithText(passwordFieldRegister, passwordRegister);
 
-        registerButton.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                registerButton.setForeground(Color.WHITE);
-            }
 
-            public void mouseExited(MouseEvent e) {
-                registerButton.setForeground(Color.BLACK);
-            }
-        });
         setButton(registerButton, 25);
         registerButton.setPreferredSize(new Dimension(402, 70));
 
-        ImageIcon imageIconReturnBlack = new ImageIcon("images/fleche return black.png");
-        ImageIcon imageIconReturnBlackResize = new ImageIcon(imageIconReturnBlack.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        ImageIcon imageIconReturnBlack = new ImageIcon("Icons/fleche return black.png");
+        imageIconReturnBlackResize = new ImageIcon(imageIconReturnBlack.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
         Image imageReturnBlack = imageIconReturnBlackResize.getImage();
 
-        ImageIcon imageIconReturnWhite = new ImageIcon("images/fleche return white.png");
-        ImageIcon imageIconReturnWhiteResize = new ImageIcon(imageIconReturnWhite.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        ImageIcon imageIconReturnWhite = new ImageIcon("Icons/fleche return white.png");
+        imageIconReturnWhiteResize = new ImageIcon(imageIconReturnWhite.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
 
         returnLabel = new JLabel(new ImageIcon(imageReturnBlack));
 
@@ -323,53 +308,11 @@ public class LoginView extends JFrame {
         currentPanel = panelLog;
         add(currentPanel);
 
-        signUpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                changeView(panelRegister);
-            }
-        });
-
-//        returnButton.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                changeView(panelLog);
-//            }
-//        });
-
-        returnLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                returnLabel.setIcon(imageIconReturnWhiteResize);
-                returnLabel.repaint();
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                returnLabel.setIcon(imageIconReturnBlackResize);
-                returnLabel.repaint();
-            }
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                changeView(panelLog);
-            }
-        });
 
         this.setVisible(true);
 
     }
 
-
-    public void changeView(JPanel panel) {
-        currentPanel.setVisible(false);
-        currentPanel = panel;
-        add(currentPanel);
-        currentPanel.setVisible(true);
-        revalidate();
-        repaint();
-
-    }
 
     public void setFieldWithText(JTextField textField, JLabel text){
         textField.setBackground(new Color(0, 0, 0, 0));
@@ -450,6 +393,18 @@ public class LoginView extends JFrame {
         return stateSignUp;
     }
 
+    public JPanel getPanelLog() { return panelLog; }
 
+    public JPanel getPanelRegister() { return panelRegister; }
+
+    public JPanel getCurrentPanel() { return currentPanel; }
+
+    public void setCurrentPanel(JPanel myCurrentPanel){
+        this.currentPanel = myCurrentPanel;
+    }
+
+    public ImageIcon getImageIconReturnBlackResize() { return imageIconReturnBlackResize; }
+
+    public ImageIcon getImageIconReturnWhiteResize() { return imageIconReturnWhiteResize; }
 }
 

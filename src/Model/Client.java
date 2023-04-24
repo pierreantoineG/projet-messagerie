@@ -1,3 +1,8 @@
+package Model;
+
+import View.*;
+import View.ClientHandler;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -105,7 +110,7 @@ public class Client extends JFrame {
                 g.setColor(new Color(217, 217, 217));
                 g.drawRoundRect(167, 540, 485, 75, 30, 30);
 
-                //Dessiner le carrée pour fenetre actuelle
+                //Dessiner le carrée pour View.fenetre actuelle
                 g.setColor(new Color(0, 245, 212));
                 g.fillRoundRect(5, 152, 140, 40, 20, 20);
 
@@ -199,7 +204,7 @@ public class Client extends JFrame {
         JTextField handle = new JTextField();
         handle.setFont(urbanist.deriveFont(Font.PLAIN, 13));
         handle.setBorder(null);
-        handle.setText(ClientHandler.cName);
+        handle.setText(ClientHandler.getcName());
 
         //Scroll Pane
         scrollPane_chat = new JScrollPane();
@@ -398,7 +403,7 @@ public class Client extends JFrame {
         contentLayout.putConstraint(SpringLayout.NORTH, scrollPane_chat, 85, SpringLayout.NORTH, panel_chat);
         contentLayout.putConstraint(SpringLayout.WEST, scrollPane_chat, 155, SpringLayout.WEST, panel_chat);
 
-        //Message
+        //Model.Message
         contentLayout.putConstraint(SpringLayout.NORTH, message_field, 542, SpringLayout.NORTH, panel_chat);
         contentLayout.putConstraint(SpringLayout.WEST, message_field, 180, SpringLayout.WEST, panel_chat);
 
@@ -494,7 +499,7 @@ public class Client extends JFrame {
 
     public static void startClient() {
         try {
-            client = new Socket(ClientHandler.ip, ClientHandler.cpNo);
+            client = new Socket(ClientHandler.getIp(), ClientHandler.getCpNo());
             out = new PrintWriter(client.getOutputStream());
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
@@ -540,7 +545,7 @@ public class Client extends JFrame {
         this.username = username;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return "User{" +
                 "first_name='" + first_name + '\'' +
@@ -549,7 +554,7 @@ public class Client extends JFrame {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 '}';
-    }
+    }*/
 
     public void startReading() {
         Runnable r1 = () -> {
@@ -559,7 +564,7 @@ public class Client extends JFrame {
                     if (!msg.isEmpty()) {
                         SwingUtilities.invokeLater(() -> {
                             String[] parts = msg.split(" : ");
-                            if (!ClientHandler.cName.equals(parts[0])) {
+                            if (!ClientHandler.getcName().equals(parts[0])) {
                                 JPanel panel = formatLabel(msg, false); // pass false to indicate that this message is not from the user
                                 chatArea.setCaretPosition(chatArea.getDocument().getLength());
                                 chatArea.add(panel);
@@ -584,27 +589,27 @@ public class Client extends JFrame {
             String msg = message_field.getText();
             if (!msg.isEmpty()) {
                 if (chatArea.getText().isEmpty()) {
-                    JPanel messagePanel = formatLabel(ClientHandler.cName + " : " + msg, true);
+                    JPanel messagePanel = formatLabel(ClientHandler.getcName() + " : " + msg, true);
                     chatArea.setLayout(new BoxLayout(chatArea, BoxLayout.Y_AXIS));
                     chatArea.add(messagePanel);
                     chatArea.add(Box.createRigidArea(new Dimension(0, 20))); // espace entre les messages
                     chatArea.revalidate();
                     chatArea.repaint();
-                    out.println(ClientHandler.cName + " : " + msg);
+                    out.println(ClientHandler.getcName() + " : " + msg);
                     out.flush();
                     message_field.setText("Send a message");
                     scrollPane_chat.setViewportView(chatArea);
 
                 }
                 else {
-                    JPanel messagePanel = formatLabel(ClientHandler.cName + " : " + msg, true);
+                    JPanel messagePanel = formatLabel(ClientHandler.getcName() + " : " + msg, true);
                     chatArea.setLayout(new BoxLayout(chatArea, BoxLayout.Y_AXIS));
                     chatArea.add(messagePanel);
                     chatArea.add(Box.createRigidArea(new Dimension(0, 20))); // espace entre les messages
                     chatArea.setBackground(Color.WHITE);
                     chatArea.revalidate();
                     chatArea.repaint();
-                    out.println(ClientHandler.cName + " : " + msg);
+                    out.println(ClientHandler.getcName() + " : " + msg);
                     out.flush();
                     message_field.setText("Send a message");
                     scrollPane_chat.setViewportView(chatArea);

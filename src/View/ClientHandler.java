@@ -1,3 +1,7 @@
+package View;
+
+import Model.Client;
+
 import java.io.*;
 import javax.swing.*;
 import java.awt.*;
@@ -211,6 +215,18 @@ public class ClientHandler extends JFrame {
 
         add(contentPane);
 
+    }
+
+    public static String getcName(){
+        return cName;
+    }
+
+    public static String getIp(){
+        return ip;
+    }
+
+    public static int getCpNo(){
+        return cpNo;
     }
 
 }

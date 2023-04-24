@@ -1,3 +1,5 @@
+import Model.Client;
+import Model.Message;
 
 import java.util.List;
 

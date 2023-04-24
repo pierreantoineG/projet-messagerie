@@ -1,3 +1,7 @@
+package Model;
+
+import Model.Client;
+
 import java.time.LocalDateTime;
 
 public class Message {
@@ -38,7 +42,7 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message{" +
+        return "Model.Message{" +
                 ", content='" + content + '\'' +
                 ", user=" + client_id +
                 ", timestamp =" + timestamp +

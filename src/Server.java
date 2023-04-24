@@ -124,8 +124,8 @@ public class Server extends JFrame implements Runnable{
                             JLabel label = new JLabel("New client connected.");
                             label.setFont(new Font("Arial", Font.BOLD, 16));
                             panel.add(label);
-                            Client.chatArea.add(panel);
-                            Client.chatArea.add(Box.createRigidArea(new Dimension(0, 20)));*/
+                            Model.Client.chatArea.add(panel);
+                            Model.Client.chatArea.add(Box.createRigidArea(new Dimension(0, 20)));*/
 
 
                             Server server = new Server(socket);
