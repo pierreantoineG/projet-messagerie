@@ -23,7 +23,6 @@ public class ChatView extends JFrame {
     static Font urbanist;
 
 
-
     static {
         try {
             urbanist = Font.createFont(Font.TRUETYPE_FONT, font);
@@ -212,12 +211,7 @@ public class ChatView extends JFrame {
         message_field = new JTextArea("Send a message");
         message_field.setFont(urbanist.deriveFont(Font.PLAIN, 15));
         message_field.setPreferredSize(new Dimension(400, 65));
-        /*message_field.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                message_field.setText("");
-            }
-        });*/
+
         message_field.setLineWrap(true);
         message_field.setWrapStyleWord(true);
 
@@ -225,7 +219,7 @@ public class ChatView extends JFrame {
         JTextField handle = new JTextField();
         handle.setFont(urbanist.deriveFont(Font.PLAIN, 13));
         handle.setBorder(null);
-        handle.setText(ClientHandler.cName);
+//        handle.setText(ClientHandler.cName);
 
         //Scroll Pane
         scrollPane_chat = new JScrollPane();
@@ -256,19 +250,6 @@ public class ChatView extends JFrame {
         button_send.setBackground(new Color(0, 0, 0, 0));
         button_send.setPreferredSize(new Dimension(25, 25));
 
-        /*button_send.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startWriting();
-
-            }
-        });
-        button_send.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseExited(MouseEvent e) {
-                button_send.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
-            }
-        });*/
 
         //Bouton chat
         button_chat.setFont(urbanist.deriveFont(Font.BOLD, 19));
@@ -276,25 +257,6 @@ public class ChatView extends JFrame {
         button_chat.setBorder(null);
         button_chat.setContentAreaFilled(false);
         button_chat.setOpaque(false);
-        /*button_chat.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
-            }
-
-            /*public void mouseEntered(MouseEvent e) {
-                //g.setColor(new Color(0, 245, 212));
-                //g.fillRoundRect(5, 100, 140, 50, 30, 30);
-                button_chat.setBackground(new Color(0, 245, 212));
-                button_chat.setOpaque(true);
-                button_chat.setBorder(null); // Changer la couleur de fond du bouton en rouge
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button_chat.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
-            }
-        });*/
 
 
         //Bouton users
@@ -303,74 +265,18 @@ public class ChatView extends JFrame {
         button_users.setContentAreaFilled(false);
         button_users.setBackground(new Color(0, 0, 0, 0));
         button_users.setBorder(null);
-        /*button_users.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
-            }
-
-            public void mouseEntered(MouseEvent e) {
-                button_users.setBackground(new Color(0, 245, 212));
-                button_users.setOpaque(true);
-                button_users.setBorder(null);
-                button_users.setContentAreaFilled(false);
-
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button_users.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
-                button_users.setOpaque(true);
-                button_users.setBorder(null);
-                button_users.setContentAreaFilled(false);
-            }
-        });*/
 
         //Bouton settings
         button_settings.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_settings.setBackground(new Color(0, 0, 0, 0));
         button_settings.setBorder(null);
         button_settings.setOpaque(false);
-        /*button_settings.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
-            }
-
-            public void mouseEntered(MouseEvent e) {
-                button_settings.setBackground(new Color(0, 245, 212));
-                button_settings.setOpaque(true);
-                button_settings.setBorder(null); // Changer la couleur de fond du bouton en rouge
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button_settings.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
-            }
-        });*/
 
         //Bouton log out
         button_logout.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_logout.setBackground(new Color(0, 0, 0, 0));
         button_logout.setBorder(null);
         button_logout.setOpaque(false);
-        /*button_logout.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
-            }
-
-            public void mouseEntered(MouseEvent e) {
-                button_logout.setBackground(new Color(0, 245, 212));
-                button_logout.setOpaque(true);
-                button_logout.setBorder(null); // Changer la couleur de fond du bouton en rouge
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button_logout.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
-            }
-        });*/
 
         //Ajout de tous les composants au JPanel
         panel_chat.add(lbl_logo);
@@ -511,8 +417,6 @@ public class ChatView extends JFrame {
 
         add(panel_chat);
 
-        //startClient();
-        //startReading();
     }
 
 

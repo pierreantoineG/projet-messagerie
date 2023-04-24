@@ -2,7 +2,7 @@ package Controller;
 
 import Model.*;
 import View.ChatView;
-import View.ClientHandler;
+
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,11 +18,14 @@ import java.util.Date;
 
 public class ChatControl extends IOException {
     private ChatView chatView;
-    private Client clientUser;
+
+//    private Client clientUser;
     private Message message;
     private static Socket client;
     private static PrintWriter out;
     private static BufferedReader in;
+    private static String addIp = "192.168.1.40";
+    private static int numPort = 1000;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
 
@@ -40,7 +43,7 @@ public class ChatControl extends IOException {
         this.chatView = chatView;
     }
 
-    public void initializeChatView(){
+    public void initializeChatView(String cName){
         JTextArea message_field = chatView.getMessage_field();
         message_field.addMouseListener(new MouseAdapter() {
             @Override
@@ -53,8 +56,7 @@ public class ChatControl extends IOException {
         button_send.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startWriting();
-
+                startWriting(cName);
             }
         });
 
@@ -146,24 +148,26 @@ public class ChatControl extends IOException {
                 button_logout.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
             }
         });
+        chatView.setVisible(true);
 
         startClient();
-        //startReading();
+        startReading(cName);
     }
+
+
 
     public static void startClient() {
         try {
-            client = new Socket(ClientHandler.getIp(), ClientHandler.getCpNo());
+            client = new Socket(addIp, numPort);
             out = new PrintWriter(client.getOutputStream());
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void startReading() {
+    public void startReading(String cName) {
         Runnable r1 = () -> {
             try {
                 while (true) {
@@ -171,7 +175,7 @@ public class ChatControl extends IOException {
                     if (!msg.isEmpty()) {
                         SwingUtilities.invokeLater(() -> {
                             String[] parts = msg.split(" : ");
-                            if (!ClientHandler.getcName().equals(parts[0])) {
+                            if (!cName.equals(parts[0])) {
                                 JPanel panel = formatLabel(msg, false); // pass false to indicate that this message is not from the user
                                 chatView.getChatArea().setCaretPosition(chatView.getChatArea().getDocument().getLength());
                                 chatView.getChatArea().add(panel);
@@ -190,33 +194,33 @@ public class ChatControl extends IOException {
         chatView.getScrollPane_chat().setViewportView(chatView.getChatArea());
     }
 
-    public void startWriting() {
+    public void startWriting(String cName) {
 
         try {
             String msg = chatView.getMessage_field().getText();
             if (!msg.isEmpty()) {
                 if (chatView.getChatArea().getText().isEmpty()) {
-                    JPanel messagePanel = formatLabel(ClientHandler.getcName() + " : " + msg, true);
+                    JPanel messagePanel = formatLabel(cName + " : " + msg, true);
                     chatView.getChatArea().setLayout(new BoxLayout(chatView.getChatArea(), BoxLayout.Y_AXIS));
                     chatView.getChatArea().add(messagePanel);
                     chatView.getChatArea().add(Box.createRigidArea(new Dimension(0, 20))); // espace entre les messages
                     chatView.getChatArea().revalidate();
                     chatView.getChatArea().repaint();
-                    out.println(ClientHandler.getcName() + " : " + msg);
+                    out.println(cName + " : " + msg);
                     out.flush();
                     chatView.getMessage_field().setText("Send a message");
                     chatView.getScrollPane_chat().setViewportView(chatView.getChatArea());
 
                 }
                 else {
-                    JPanel messagePanel = formatLabel(ClientHandler.getcName() + " : " + msg, true);
+                    JPanel messagePanel = formatLabel(cName + " : " + msg, true);
                     chatView.getChatArea().setLayout(new BoxLayout(chatView.getChatArea(), BoxLayout.Y_AXIS));
                     chatView.getChatArea().add(messagePanel);
                     chatView.getChatArea().add(Box.createRigidArea(new Dimension(0, 20))); // espace entre les messages
                     chatView.getChatArea().setBackground(Color.WHITE);
                     chatView.getChatArea().revalidate();
                     chatView.getChatArea().repaint();
-                    out.println(ClientHandler.getcName() + " : " + msg);
+                    out.println(cName + " : " + msg);
                     out.flush();
                     chatView.getMessage_field().setText("Send a message");
                     chatView.getScrollPane_chat().setViewportView(chatView.getChatArea());

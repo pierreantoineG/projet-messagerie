@@ -2,6 +2,7 @@ package Controller;
 
 import View.*;
 import Model.*;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -20,17 +21,17 @@ import java.util.Scanner;
 public class LoginControl {
     private LoginView loginView;
 
-    private Client client;
+    private Client clientUser;
 
     private final String url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
     private final String login = "pgloulou";
-    private final String  passwd = "Malouise17";
+    private final String passwd = "Malouise17";
 
-    public LoginControl(LoginView loginView){
+    public LoginControl(LoginView loginView) {
         this.loginView = loginView;
     }
 
-    public void initialize(){
+    public void initialize() {
         animationComponentField(loginView.getHandleField(), loginView.getHandle());
         animationComponentField(loginView.getPasswordField(), loginView.getPassword());
         animationComponentField(loginView.getNameField(), loginView.getNameRegister());
@@ -53,25 +54,31 @@ public class LoginControl {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String handle = loginView.getHandleField().getText();
-                char[] password = loginView.getPasswordField().getPassword();
-                int userRole = VerifLogin(handle, password);
-                if(userRole != -1){
-                    if(userRole == 1){
+                clientUser = new Client();
+                clientUser.setUsername(loginView.getHandleField().getText());
+                clientUser.setPassword(loginView.getPasswordField().getPassword());
+
+//                String handle = loginView.getHandleField().getText();
+//                char[] password = loginView.getPasswordField().getPassword();
+                clientUser.setTypeUser(VerifLogin(clientUser.getUsername(), clientUser.getPassword()));
+
+                if (clientUser.getTypeUser() != -1) {
+                    if (clientUser.getTypeUser() == 1) {
                         //displayAdminView();
-                        displayUserView();
-                    }
-                    else if (userRole == 2){
+                        displayUserView(clientUser.getUsername());
+                        loginView.setVisible(false);
+                    } else if (clientUser.getTypeUser() == 2) {
                         //displayModeratorView();
-                        displayUserView();
+                        displayUserView(clientUser.getUsername());
+                        loginView.setVisible(false);
+                    } else {
+                        displayUserView(clientUser.getUsername());
+                        loginView.setVisible(false);
                     }
-                    else{
-                        displayUserView();
-                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Nom d'utilisateur ou mot de passe invalide.");
                 }
-                else{
-                        JOptionPane.showMessageDialog(null, "Nom d'utilisateur ou mot de passe invalide.");
-                }
+                System.out.println(clientUser.getUsername());
             }
         });
 
@@ -80,19 +87,28 @@ public class LoginControl {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = loginView.getNameRegister().getText();
-                String surname = loginView.getSurnameRegister().getText();
-                String email = loginView.getEmail().getText();
-                String handle = loginView.getHandleFieldRegister().getText();
-                char[] password = loginView.getPasswordFieldRegister().getPassword();
+                clientUser = new Client();
+                clientUser.setFirst_name(loginView.getNameField().getText());
+                clientUser.setLast_name(loginView.getSurnameField().getText());
+                clientUser.setEmail(loginView.getEmailField().getText());
+                clientUser.setUsername(loginView.getHandleFieldRegister().getText());
+                clientUser.setPassword(loginView.getPasswordFieldRegister().getPassword());
+//                String name = loginView.getNameRegister().getText();
+//                String surname = loginView.getSurnameRegister().getText();
+//                String email = loginView.getEmail().getText();
+//                String handle = loginView.getHandleFieldRegister().getText();
+//                char[] password = loginView.getPasswordFieldRegister().getPassword();
                 int role = 3;
+                clientUser.setId(role);
 
-                if (registerUser(name, surname, email, handle, password, role)) {
+                if (registerUser(clientUser.getFirst_name(), clientUser.getLast_name(), clientUser.getEmail(), clientUser.getUsername(), clientUser.getPassword(), clientUser.getTypeUser())) {
                     JOptionPane.showMessageDialog(null, "Utilisateur enregistré avec succès.");
+                    displayUserView(clientUser.getUsername());
+                    loginView.setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "Erreur lors de l'enregistrement de l'utilisateur.");
                 }
-
+                System.out.println(clientUser.getUsername());
 
             }
         });
@@ -127,8 +143,7 @@ public class LoginControl {
     }
 
 
-
-    public void animationComponentField(JTextComponent myComponentField, JLabel myLabelComponent){
+    public void animationComponentField(JTextComponent myComponentField, JLabel myLabelComponent) {
         myComponentField.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 if (myComponentField.getText().isEmpty()) {
@@ -137,6 +152,7 @@ public class LoginControl {
                     myLabelComponent.setVisible(false);
                 }
             }
+
             public void removeUpdate(DocumentEvent e) {
                 if (myComponentField.getText().isEmpty()) {
                     myLabelComponent.setVisible(true);
@@ -144,6 +160,7 @@ public class LoginControl {
                     myLabelComponent.setVisible(false);
                 }
             }
+
             public void insertUpdate(DocumentEvent e) {
                 myLabelComponent.setVisible(false);
             }
@@ -165,12 +182,14 @@ public class LoginControl {
         loginView.repaint();
 
     }
-    public void changeColor(JButton jbutton){
+
+    public void changeColor(JButton jbutton) {
         jbutton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 jbutton.setForeground(Color.WHITE);
             }
+
             @Override
             public void mouseExited(MouseEvent e) {
                 jbutton.setForeground(Color.BLACK);
@@ -223,6 +242,7 @@ public class LoginControl {
     }
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int i = 0; i < bytes.length; i++) {
@@ -288,9 +308,9 @@ public class LoginControl {
         return success;
     }
 
-    public void displayUserView(){
+    public void displayUserView(String cName) {
         ChatView chatView = new ChatView();
         ChatControl chatControl = new ChatControl(chatView);
-        chatControl.initializeChatView();
+        chatControl.initializeChatView(cName);
     }
 }
