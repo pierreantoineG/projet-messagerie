@@ -22,6 +22,61 @@ public class UserDaoImpl implements UserDao {
     private static String login = "pgloulou";
     private static String passwd = "Malouise17";
 
+    public static void saveMessage(String username, String content) {
+        try {
+            // Établir la connexion avec la base de données
+            Connection connection = DriverManager.getConnection(url, login, passwd);
+            // Récupérer l'ID de l'utilisateur
+            String query = "SELECT id FROM users WHERE username=?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            int userID = -1;
+            if (resultSet.next()) {
+                userID = resultSet.getInt("id");
+            }
+            // Si l'utilisateur existe, enregistrer le message dans la base de données
+            if (userID != -1) {
+                query = "INSERT INTO message (user_id, content) VALUES (?, ?)";
+                statement = connection.prepareStatement(query);
+                statement.setInt(1, userID);
+                statement.setString( 2, content);
+                statement.executeUpdate();
+            }
+            // Fermer la connexion avec la base de données
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void checkAndBanUser(String username, String content) throws SQLException {
+        String[] forbiddenWords = {"putain", "merde", "enculé", "connard", "salope", "pédé", "gueule",
+                "trou du cul", "foutre", "bite", "cul", "nique ta mère", "va te faire foutre", "sale race",
+                "sale juif", "sale noir", "sale arabe", "sale chinois", "sale pédé", "sale gouine", "suce ma bite",
+                "bougnoule", "tapette", "PD", "juif", "nègre", "enculer", "pétasse", "enfoiré", "putassier", "sa race",
+                "sa mère", "ta mère la pute", "ta mère la salope", "ta mère la traînée", "traînée", "tarlouze", "fiotte",
+                "fiot", "connasse", "bordel", "foutaise", "va chier", "chier dans ton froc", "chier dans ton slip",
+                "fils de pute", "fils de chienne", "fils de pédale", "enculé de ta race", "enculé de ta mère", "baise ta mère",
+                "baiser", "niquer", "merdique", "merdouille", "pouffiasse", "branleur", "branleuse", "sac à merde", "culé",
+                "dégueulasse", "connard de ta race", "foutre en l'air", "foutre le bordel", "grosse pute", "batard", "batârd",
+                "connard de merde", "pute de merde", "sale enculé", "sale fils de pute", "va niquer ta mère",
+                "vas te faire enculer", "enculé de ta mère la pute", "va crever", "enculé de ta mère la salope",
+                "sale fils de chienne", "suceur de bites", "sale enculé de ta mère", "sale grosse pute", "pute à juif",
+                "pute à nègre", "pute à arabe", "pute à chinois", "pute à pédé", "pute à gouine", "enculé de ta mère le bâtard",
+                "salaud", "salopard", "branleur de merde", "pisseuse", "suceuse", "enculé de ta mère le chien", "enculé de ta race le bâtard",
+                "va te faire mettre", "va te faire voir", "connard de ta mère", "fils de pute de ta race", "sale pute de ta mère",
+                "ta mère en string", "ta mère en bikini", "ta mère en maillot de bain", "ta mère la grenouille", "ta mère la truite",
+                "ta mère la baleine", "ta mère la vache", "ta mère la dinde", "ta mère la poule", "ta mère la pintade", "ta mère la dinde aux marrons",
+                "ta mère la chauve-souris", "ta mère la carpe", "ta mère la sardine", "ta mère la truie", "ta mère la cochonne"};
+        for (String word : forbiddenWords) {
+            if (content.contains(word)) {
+                banUser(username, true);
+                break;
+            }
+        }
+    }
+
     public static Map<String, Integer> countMessagesSentByUser() {
         Map<String, Integer> messageCountByUser = new HashMap<>();
         String query = "SELECT u.username, COUNT(m.id) AS nb_messages_envoyes " +

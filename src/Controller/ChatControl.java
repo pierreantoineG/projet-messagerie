@@ -222,6 +222,8 @@ public class ChatControl extends IOException {
                     JPanel messagePanel = formatLabel(cName + " : " + msg, true);
                     chatView.getChatArea().setLayout(new BoxLayout(chatView.getChatArea(), BoxLayout.Y_AXIS));
                     chatView.getChatArea().add(messagePanel);
+                    UserDaoImpl.saveMessage(cName,msg);
+                    UserDaoImpl.checkAndBanUser(cName,msg);
                     chatView.getChatArea().add(Box.createRigidArea(new Dimension(0, 20))); // espace entre les messages
                     chatView.getChatArea().revalidate();
                     chatView.getChatArea().repaint();
