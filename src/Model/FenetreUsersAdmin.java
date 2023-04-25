@@ -1,3 +1,9 @@
+package Model;
+
+
+import Controller.Settings;
+import Dao.UserDaoImpl;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -9,11 +15,25 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class fenetreUsers {
+public class FenetreUsersAdmin extends JFrame{
     private static boolean isBan = false;
     private static boolean isUban = false;
+    private static boolean isAdmin = false;
+    private static boolean isModo = false;
+    private static boolean isUser = false;
+    private static Client client;
 
-    public static void main(String[] args) throws IOException, FontFormatException, SQLException {
+    public FenetreUsersAdmin(Client client){
+        this.client = client;
+    }
+
+    public void initialize() throws IOException, FontFormatException, SQLException {
+
+        //Création de la fenêtre
+        setSize(1000, 680);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
 
         //Font
         File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
@@ -77,10 +97,10 @@ public class fenetreUsers {
         chatArea.setEditable(false);
         chatArea.setBackground(Color.WHITE);
         //Scroll Pane
-        JScrollPane scrollPane_chat = new JScrollPane(chatArea);
+        /*JScrollPane scrollPane_chat = new JScrollPane(chatArea);
         scrollPane_chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane_chat.setPreferredSize(new Dimension(510, 540));
-        scrollPane_chat.setBorder(null);
+        scrollPane_chat.setBorder(null);*/
 
         //Boutons
         //Bouton chat
@@ -95,14 +115,15 @@ public class fenetreUsers {
             public void mousePressed(MouseEvent e) {
                 //Afficher page chat
             }
+
             public void mouseEntered(MouseEvent e) {
                 button_chat.setForeground(Color.WHITE);
             }
+
             public void mouseExited(MouseEvent e) {
                 button_chat.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
             }
         });
-
 
         //Bouton users
         JButton button_users = new JButton("Users");
@@ -117,7 +138,6 @@ public class fenetreUsers {
                 //Rien ne se passe
             }
         });
-
         button_users.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 button_users.setForeground(Color.WHITE);
@@ -137,13 +157,11 @@ public class fenetreUsers {
         button_settings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fenetreSettings f1 = null;
                 try {
-                    f1 = new fenetreSettings();
+                    Settings settings = new Settings(client);
                 } catch (IOException | FontFormatException | SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-                f1.setVisible(true);
             }
         });
         button_settings.addMouseListener(new MouseAdapter() {
@@ -167,9 +185,11 @@ public class fenetreUsers {
             public void mousePressed(MouseEvent e) {
                 //Remettre la page du log in
             }
+
             public void mouseEntered(MouseEvent e) {
                 button_logout.setForeground(Color.WHITE);
             }
+
             public void mouseExited(MouseEvent e) {
                 button_logout.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
             }
@@ -186,9 +206,11 @@ public class fenetreUsers {
             public void mousePressed(MouseEvent e) {
                 //Afficher report
             }
+
             public void mouseEntered(MouseEvent e) {
                 button_reporting.setForeground(Color.WHITE);
             }
+
             public void mouseExited(MouseEvent e) {
                 button_reporting.setForeground(Color.BLACK);
             }
@@ -197,11 +219,15 @@ public class fenetreUsers {
         String[] moderatorUsers;
         String[] administratorUsers;
         Object[][] userInfo;
+        String[] bannedUsers;
+        String[] unbannedUsers;
 
         try {
             moderatorUsers = UserDaoImpl.getRoleModeratorUsers();
             administratorUsers = UserDaoImpl.getAdmim();
             userInfo = UserDaoImpl.getUserStatus();
+            bannedUsers = UserDaoImpl.getBannedUsers();
+            unbannedUsers = UserDaoImpl.getUnBannedUsers();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -222,6 +248,20 @@ public class fenetreUsers {
         panel_grid2.setOpaque(false);
         System.out.println(userInfo.length);
 
+        JPanel panel_grid3 = new JPanel(new GridLayout(userInfo.length, 1));
+        panel_grid3.setOpaque(false);
+
+        JPanel panel_grid4 = new JPanel(new GridLayout(userInfo.length, 1));
+        panel_grid4.setOpaque(false);
+
+        JPanel panel_grid5 = new JPanel(new GridLayout(userInfo.length, 1));
+        panel_grid5.setOpaque(false);
+
+        JPanel panel_grid6 = new JPanel(new GridLayout(userInfo.length, 1));
+        panel_grid6.setOpaque(false);
+
+        JPanel panel_grid7 = new JPanel(new GridLayout(userInfo.length, 1));
+        panel_grid7.setOpaque(false);
 
         JPanel panel_chat = new JPanel() {
             public void paintComponent(Graphics g) {
@@ -234,8 +274,14 @@ public class fenetreUsers {
 
                 int x = 160;
                 int y = 90;
+                int x_ban = 580;
+                int y_ban = 100;
                 int x1 = 170;
                 int y1 = 105;
+                int x4 = 499;
+                int x5 = 522;
+                int x6 = 545;
+                int y4 = 100;
 
                 for (Object[] user : userInfo) {
                     String name = (String) user[0];
@@ -265,16 +311,217 @@ public class fenetreUsers {
                     username1.setForeground(new Color(0, 245, 212));
                     username1.setEditable(false);
 
+                    JTextField status = new JTextField();
+                    status.setFont(urbanist.deriveFont(Font.BOLD, 14));
+                    status.setBorder(null);
+                    status.setText("Status :");
+                    panel_grid2.add(status);
+                    status.setBorder(new EmptyBorder(0, 0, 35, 0));
+                    status.setOpaque(false);
+                    status.setBackground(new Color(0, 0, 0, 0));
+                    status.setEditable(false);
+                    status.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            System.out.println("l");
+                            //TODO FAIRE LES VARIABLES
+                        }
+                    });
+
+                    JTextField A_Admin = new JTextField();
+                    A_Admin.setFont(urbanist.deriveFont(Font.PLAIN, 16));
+                    A_Admin.setBorder(null);
+                    A_Admin.setText("A");
+                    panel_grid5.add(A_Admin);
+                    A_Admin.setBorder(new EmptyBorder(0, 0, 35, 0));
+                    A_Admin.setOpaque(false);
+                    A_Admin.setEditable(false);
+                    A_Admin.setBackground(new Color(0, 0, 0, 0));
+                    A_Admin.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            System.out.println("a");
+                            isAdmin = true;
+                            isUser = false;
+                            isModo = false;
+                            //repaint();
+                        }
+                    });
+
+                    JTextField M_Modo = new JTextField();
+                    M_Modo.setFont(urbanist.deriveFont(Font.PLAIN, 16));
+                    M_Modo.setBorder(null);
+                    M_Modo.setText("M");
+                    panel_grid6.add(M_Modo);
+                    M_Modo.setBorder(new EmptyBorder(0, 0, 35, 0));
+                    M_Modo.setOpaque(false);
+                    M_Modo.setEditable(false);
+                    M_Modo.setBackground(new Color(0, 0, 0, 0));
+                    M_Modo.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            System.out.println("m");
+                            isModo = true;
+                            isUser = false;
+                            isAdmin = false;
+                            //repaint();
+                        }
+                    });
+
+                    JTextField U_user = new JTextField();
+                    U_user.setFont(urbanist.deriveFont(Font.PLAIN, 16));
+                    U_user.setBorder(null);
+                    U_user.setText("U");
+                    panel_grid7.add(U_user);
+                    U_user.setBorder(new EmptyBorder(0, 0, 35, 0));
+                    U_user.setOpaque(false);
+                    U_user.setEditable(false);
+                    U_user.setBackground(new Color(0, 0, 0, 0));
+                    U_user.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            System.out.println("u");
+                            isUser = true;
+                            isAdmin = false;
+                            isModo = false;
+                            //repaint();
+                        }
+                    });
+
+                    if (banned == 0) {
+                        String currentUser = username;
+                        JButton ban = new JButton("Ban");
+                        ban.setFont(urbanist.deriveFont(Font.BOLD, 14));
+                        ban.setBackground(new Color(0, 0, 0, 0));
+                        ban.setForeground(Color.WHITE);
+                        ban.setBorder(null);
+                        ban.setOpaque(false);
+                        ban.setBorder(new EmptyBorder(0, 0, 38, 0));
+                        ban.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                isBan = true;
+                                try {
+                                    UserDaoImpl.banUser(currentUser, true);
+                                } catch (SQLException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                //;
+                            }
+
+                        });
+                        panel_grid4.add(ban);
+                    } else {
+                        JButton unbanned = new JButton("Unban");
+                        //ban.setActionCommand("a");
+                        unbanned.setFont(urbanist.deriveFont(Font.BOLD, 14));
+                        unbanned.setBackground(new Color(0, 0, 0, 0));
+                        unbanned.setForeground(Color.WHITE);
+                        unbanned.setBorder(null);
+                        unbanned.setOpaque(false);
+                        unbanned.setBorder(new EmptyBorder(0, 0, 38, 0));
+                        String currentUser = username;
+                        unbanned.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                unbanned.setText("Ban");
+                                try {
+                                    UserDaoImpl.UnbanUser(currentUser, true);
+                                } catch (SQLException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+                        });
+
+                        panel_grid4.add(unbanned);
+                    }
+                    //Image ban
+                    ImageIcon img_ban = new ImageIcon("Icons/icon_bannir.png");
+                    JLabel lbl_ban = new JLabel(new ImageIcon(img_ban.getImage()));
+                    lbl_ban.setBorder(new EmptyBorder(0, 0, 35, 0));
+                    panel_grid3.add(lbl_ban);
 
                     g.setColor(new Color(133, 229, 255));
                     g.drawRoundRect(x, y, 500, 45, 30, 30);
                     g.setColor(Color.WHITE);
                     g.fillRoundRect(x, y, 500, 45, 30, 30);
+                    g.setColor(new Color(239, 72, 72));
+                    g.fillRoundRect(x_ban, y_ban, 75, 25, 20, 20);
                     y += 55;
+                    y_ban += 55;
 
                     g.setColor(color);
-                    g.fillOval(x1,y1,10,10);
+                    g.fillOval(x1, y1, 10, 10);
                     y1 += 55;
+
+                    if (role[0] == 0) { //Admin
+                        if (!isAdmin) {
+                            g.setColor(Color.BLACK);
+                            g.drawRoundRect(x4, y4, 15, 25, 15, 15);
+                            g.drawRoundRect(x5, y4, 15, 25, 15, 15);
+                            g.drawRoundRect(x6, y4, 15, 25, 15, 15);
+                            g.setColor(new Color(174, 240, 250));
+                            g.fillRoundRect(x4, y4, 15, 25, 15, 15);
+                            g.setColor(Color.WHITE);
+                            g.fillRoundRect(x5, y4, 15, 25, 15, 15);
+                            g.fillRoundRect(x6, y4, 15, 25, 15, 15);
+                        }
+                    }
+                    if (role[0] == 1) { //Modo
+                        if (!isModo) {
+                            g.setColor(Color.BLACK);
+                            g.drawRoundRect(x4, y4, 15, 25, 15, 15);
+                            g.drawRoundRect(x5, y4, 15, 25, 15, 15);
+                            g.drawRoundRect(x6, y4, 15, 25, 15, 15);
+                            g.setColor(new Color(174, 240, 250));
+                            g.fillRoundRect(x5, y4, 15, 25, 15, 15);
+                            g.setColor(Color.WHITE);
+                            g.fillRoundRect(x4, y4, 15, 25, 15, 15);
+                            g.fillRoundRect(x6, y4, 15, 25, 15, 15);
+                        }
+                    }
+                    if (role[0] == 2) { //User
+                        if (!isUser) {
+                            g.setColor(Color.BLACK);
+                            g.drawRoundRect(x4, y4, 15, 25, 15, 15);
+                            g.drawRoundRect(x5, y4, 15, 25, 15, 15);
+                            g.drawRoundRect(x6, y4, 15, 25, 15, 15);
+                            g.setColor(new Color(174, 240, 250));
+                            g.fillRoundRect(x6, y4, 15, 25, 15, 15);
+                            g.setColor(Color.WHITE);
+                            g.fillRoundRect(x5, y4, 15, 25, 15, 15);
+                            g.fillRoundRect(x4, y4, 15, 25, 15, 15);
+                        }
+                    }
+                    if (isAdmin) {
+                        g.setColor(Color.BLACK);
+                        g.drawRoundRect(x4, y4, 15, 25, 15, 15);
+                        g.drawRoundRect(x5, y4, 15, 25, 15, 15);
+                        g.drawRoundRect(x6, y4, 15, 25, 15, 15);
+                        g.setColor(new Color(174, 240, 250));
+                        g.fillRoundRect(x4, y4, 15, 25, 15, 15);
+                        g.setColor(Color.WHITE);
+                        g.fillRoundRect(x5, y4, 15, 25, 15, 15);
+                        g.fillRoundRect(x6, y4, 15, 25, 15, 15);
+                        repaint();
+                    }
+                    if (isUser) {
+                        g.setColor(Color.BLACK);
+                        g.drawRoundRect(x4, y4, 15, 25, 15, 15);
+                        g.drawRoundRect(x5, y4, 15, 25, 15, 15);
+                        g.drawRoundRect(x6, y4, 15, 25, 15, 15);
+                        g.setColor(new Color(174, 240, 250));
+                        g.fillRoundRect(x4, y4, 15, 25, 15, 15);
+                        g.setColor(Color.WHITE);
+                        g.fillRoundRect(x5, y4, 15, 25, 15, 15);
+                        g.fillRoundRect(x6, y4, 15, 25, 15, 15);
+                        repaint();
+                    }
+                    if (isModo) {
+                        g.setColor(Color.ORANGE);
+                        g.fillRoundRect(10, 10, 200, 300, 30, 30);
+                    }
+                    y4 += 55;
                 }
 
                 //Administrateur
@@ -385,12 +632,20 @@ public class fenetreUsers {
         panel_chat.add(panel_grid);
         panel_chat.add(panel_grid1);
         panel_chat.add(panel_grid2);
+        panel_chat.add(panel_grid3);
+        panel_chat.add(panel_grid4);
+        panel_chat.add(panel_grid5);
+        panel_chat.add(panel_grid6);
+        panel_chat.add(panel_grid7);
         panel_chat.setComponentZOrder(panel_grid, 0);
         panel_chat.setComponentZOrder(panel_grid1, 0);
         //panel_chat.setComponentZOrder(panel_grid3, 0);
         panel_chat.setComponentZOrder(panel_grid2, 0);
+        panel_chat.setComponentZOrder(panel_grid5, 0);
+        panel_chat.setComponentZOrder(panel_grid6, 0);
+        panel_chat.setComponentZOrder(panel_grid7, 0);
 
-        //TODO Définir les contraintes pour chaque composant pour le contentPanel uniquement
+        // Défini les contraintes pour chaque composant pour le contentPanel uniquement
         SpringLayout contentLayout = (SpringLayout) panel_chat.getLayout();
 
         contentLayout.putConstraint(SpringLayout.NORTH, lbl_logo, 40, SpringLayout.NORTH, panel_chat);
@@ -455,18 +710,27 @@ public class fenetreUsers {
         contentLayout.putConstraint(SpringLayout.NORTH, panel_grid2, 100, SpringLayout.NORTH, panel_chat);
         contentLayout.putConstraint(SpringLayout.WEST, panel_grid2, 190, SpringLayout.WEST, panel_chat);
 
-        //Création de la fenêtre
-        JFrame frame = new JFrame();
-        frame.setSize(1000, 680);
-        frame.add(panel_chat);
-        frame.revalidate();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        contentLayout.putConstraint(SpringLayout.NORTH, panel_grid3, 102, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, panel_grid3, 583, SpringLayout.WEST, panel_chat);
+
+        contentLayout.putConstraint(SpringLayout.NORTH, panel_grid4, 100, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, panel_grid4, 608, SpringLayout.WEST, panel_chat);
+
+        contentLayout.putConstraint(SpringLayout.NORTH, panel_grid5, 102, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, panel_grid5, 502, SpringLayout.WEST, panel_chat);
+
+        contentLayout.putConstraint(SpringLayout.NORTH, panel_grid6, 102, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, panel_grid6, 524, SpringLayout.WEST, panel_chat);
+
+        contentLayout.putConstraint(SpringLayout.NORTH, panel_grid7, 102, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, panel_grid7, 548, SpringLayout.WEST, panel_chat);
+        add(panel_chat);
+        revalidate();
+
 
     }
 
-    private boolean toggleBanUser(int userId, boolean isBanned) {
+    /*private boolean toggleBanUser(int userId, boolean isBanned) {
         try {
             Connection connection = DriverManager.getConnection(url, login, passwd);
             String updateQuery = "UPDATE users SET banned = ? WHERE id = ?";
@@ -480,6 +744,7 @@ public class fenetreUsers {
             ex.printStackTrace();
             return false;
         }
-    }
+    }*/
 }
+
 

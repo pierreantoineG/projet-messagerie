@@ -15,7 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class UsersAdminControl {
+public class UsersModeratorControl {
 
     UsersModeratorView usersModeratorView;
     private Client clientUser;
@@ -31,7 +31,7 @@ public class UsersAdminControl {
         }
     }
 
-    public UsersAdminControl(UsersModeratorView usersModeratorView, Client client) {
+    public UsersModeratorControl(UsersModeratorView usersModeratorView, Client client) {
         this.usersModeratorView = usersModeratorView;
         clientUser = client;
     }
@@ -74,13 +74,12 @@ public class UsersAdminControl {
         button_settings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fenetreSettings f1 = null;
                 try {
-                    f1 = new fenetreSettings();
-                } catch (IOException | FontFormatException | SQLException ex) {
+                    Settings settings = new Settings(clientUser);
+                    settings.initializeSettings();
+                } catch (SQLException | IOException | FontFormatException ex) {
                     throw new RuntimeException(ex);
                 }
-                f1.setVisible(true);
             }
         });
         button_settings.addMouseListener(new MouseAdapter() {

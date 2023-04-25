@@ -1,4 +1,6 @@
-/*import javax.swing.*;
+package Model;
+
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,12 +11,21 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class fenetreUsersModerator {
+import Controller.Settings;
+import Dao.*;
+
+
+public class FenetreUsersModerator {
     private static boolean isBan = false;
     private static boolean isUban = false;
 
-    public static void main(String[] args) throws IOException, FontFormatException, SQLException {
+    private Client client;
 
+    public FenetreUsersModerator(Client client){
+        this.client = client;
+    }
+
+    public void initialize() throws IOException, FontFormatException, SQLException {
         //Font
         File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
         Font urbanist = Font.createFont(Font.TRUETYPE_FONT, font);
@@ -80,7 +91,7 @@ public class fenetreUsersModerator {
         /*JScrollPane scrollPane_chat = new JScrollPane(chatArea);
         scrollPane_chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane_chat.setPreferredSize(new Dimension(510, 540));
-        scrollPane_chat.setBorder(null);
+        scrollPane_chat.setBorder(null);*/
 
         //Boutons
         //Bouton chat
@@ -137,13 +148,16 @@ public class fenetreUsersModerator {
         button_settings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fenetreSettings f1 = null;
                 try {
-                    f1 = new fenetreSettings();
-                } catch (IOException | FontFormatException | SQLException ex) {
+                    Settings settings = new Settings(client);
+                    settings.initializeSettings();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (FontFormatException ex) {
+                    throw new RuntimeException(ex);
+                } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-                f1.setVisible(true);
             }
         });
         button_settings.addMouseListener(new MouseAdapter() {
@@ -545,21 +559,7 @@ public class fenetreUsersModerator {
         frame.setVisible(true);
 
     }
+}
 
-    /*private boolean toggleBanUser(int userId, boolean isBanned) {
-        try {
-            Connection connection = DriverManager.getConnection(url, login, passwd);
-            String updateQuery = "UPDATE users SET banned = ? WHERE id = ?";
-            PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
-            updateStatement.setBoolean(1, !isBanned);
-            updateStatement.setInt(2, userId);
-            int updatedRows = updateStatement.executeUpdate();
-
-            return updatedRows > 0;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
-        }
-    }*/
 
 
