@@ -1,4 +1,6 @@
-/*import javax.swing.*;
+package Controller;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,15 +9,20 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import Model.*;
+import Dao.*;
 
-public class fenetreSettings extends JFrame{
+public class Settings extends JFrame {
 
+    private Client clientUser;
     private boolean isAway = false;
     private boolean isOnline = false;
 
-    public fenetreSettings() throws IOException, FontFormatException, SQLException {
+    public Settings(Client client) throws IOException, FontFormatException, SQLException {
+        this.clientUser = client;
+    }
 
-
+    public void initializeSettings() throws IOException, FontFormatException, SQLException {
         setSize(1000, 680);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -51,7 +58,7 @@ public class fenetreSettings extends JFrame{
         handle.setEditable(false);
         handle.setOpaque(false);
         handle.setBackground(new Color(0, 0, 0, 0));
-        handle.setText(ClientHandler.cName);
+        handle.setText(clientUser.getUsername());
 
         JTextField fname = new JTextField();
         fname.setFont(urbanist.deriveFont(Font.PLAIN, 20));
@@ -59,7 +66,7 @@ public class fenetreSettings extends JFrame{
         fname.setEditable(false);
         fname.setOpaque(false);
         fname.setBackground(new Color(0, 0, 0, 0));
-        fname.setText(UserDaoImpl.getFirstName(ClientHandler.cName));
+        fname.setText(UserDaoImpl.getFirstName(clientUser.getUsername()));
 
         JTextField lname = new JTextField();
         lname.setFont(urbanist.deriveFont(Font.PLAIN, 20));
@@ -67,7 +74,7 @@ public class fenetreSettings extends JFrame{
         lname.setEditable(false);
         lname.setOpaque(false);
         lname.setBackground(new Color(0, 0, 0, 0));
-        lname.setText(UserDaoImpl.getLastName(ClientHandler.cName));
+        lname.setText(UserDaoImpl.getLastName(clientUser.getUsername()));
 
         JTextField activeSince = new JTextField();
         activeSince.setFont(urbanist.deriveFont(Font.PLAIN, 20));
@@ -75,7 +82,7 @@ public class fenetreSettings extends JFrame{
         activeSince.setEditable(false);
         activeSince.setOpaque(false);
         activeSince.setBackground(new Color(0, 0, 0, 0));
-        activeSince.setText(UserDaoImpl.getLastTimeConnection(ClientHandler.cName));
+        activeSince.setText(UserDaoImpl.getLastTimeConnection(clientUser.getUsername()));
 
         JTextField messages = new JTextField();
         messages.setFont(urbanist.deriveFont(Font.PLAIN, 20));
@@ -83,7 +90,7 @@ public class fenetreSettings extends JFrame{
         messages.setEditable(false);
         messages.setOpaque(false);
         messages.setBackground(new Color(0, 0, 0, 0));
-        messages.setText(String.valueOf(UserDaoImpl.countUserMessages(ClientHandler.cName)));
+        messages.setText(String.valueOf(UserDaoImpl.countUserMessages(clientUser.getUsername())));
 
         JTextField statut = new JTextField();
         statut.setFont(urbanist.deriveFont(Font.PLAIN, 20));
@@ -91,7 +98,7 @@ public class fenetreSettings extends JFrame{
         statut.setEditable(false);
         statut.setOpaque(false);
         statut.setBackground(new Color(0, 0, 0, 0));
-        statut.setText(UserDaoImpl.getRole(ClientHandler.cName));
+        statut.setText(UserDaoImpl.getRole(clientUser.getUsername()));
 
         //Image icon editer
         ImageIcon img_icon_edit = new ImageIcon("Icons/icon_modifier.png");
@@ -184,7 +191,7 @@ public class fenetreSettings extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 fname.setEditable(false);
                 try {
-                    fname.setText(UserDaoImpl.getFirstName(ClientHandler.cName));
+                    fname.setText(UserDaoImpl.getFirstName(clientUser.getUsername()));
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -212,7 +219,7 @@ public class fenetreSettings extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 lname.setEditable(false);
                 try {
-                    lname.setText(UserDaoImpl.getLastName(ClientHandler.cName));
+                    lname.setText(UserDaoImpl.getLastName(clientUser.getUsername()));
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -239,7 +246,7 @@ public class fenetreSettings extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 handle.setEditable(false);
-                handle.setText(ClientHandler.cName);
+                handle.setText(clientUser.getUsername());
                 handle.setPreferredSize(new Dimension(100, 30));
             }
         });
@@ -264,7 +271,7 @@ public class fenetreSettings extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    UserDaoImpl.updateUserFirstName(ClientHandler.cName, fname.getText());
+                    UserDaoImpl.updateUserFirstName(clientUser.getUsername(), fname.getText());
                     fname.setEditable(false);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
@@ -290,16 +297,16 @@ public class fenetreSettings extends JFrame{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (lname.getText().equals(" ")){
+                if (lname.getText().equals(" ")) {
                     try {
-                        lname.setText(UserDaoImpl.getLastName(ClientHandler.cName));
+                        lname.setText(UserDaoImpl.getLastName(clientUser.getUsername()));
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
                 lname.setEditable(false);
                 try {
-                    UserDaoImpl.updateUserLastName(ClientHandler.cName, lname.getText());
+                    UserDaoImpl.updateUserLastName(clientUser.getUsername(), lname.getText());
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -324,12 +331,12 @@ public class fenetreSettings extends JFrame{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (handle.getText().equals(" ")){
-                    handle.setText(ClientHandler.cName);
+                if (handle.getText().equals(" ")) {
+                    handle.setText(clientUser.getUsername());
                 }
                 handle.setEditable(true);
                 try {
-                    UserDaoImpl.updateUserUserName(handle.getText(), UserDaoImpl.getFirstName(ClientHandler.cName));
+                    UserDaoImpl.updateUserUserName(handle.getText(), UserDaoImpl.getFirstName(clientUser.getUsername()));
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -367,7 +374,7 @@ public class fenetreSettings extends JFrame{
         lbl_messages.setHorizontalAlignment(SwingConstants.CENTER);
 
         //Texte 7
-        JLabel lbl_status_1= new JLabel("Status ");
+        JLabel lbl_status_1 = new JLabel("Status ");
         lbl_status_1.setFont(urbanist.deriveFont(Font.BOLD, 20));
         lbl_status_1.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -389,6 +396,7 @@ public class fenetreSettings extends JFrame{
             public void mousePressed(MouseEvent e) {
                 //Afficher page chat
             }
+
             public void mouseEntered(MouseEvent e) {
                 button_chat.setForeground(Color.WHITE);
             }
@@ -426,7 +434,7 @@ public class fenetreSettings extends JFrame{
         });
 
         //Bouton settings
-        JButton button_settings = new JButton("Settings");
+        JButton button_settings = new JButton("Controller.Settings");
         button_settings.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_settings.setBackground(new Color(0, 0, 0, 0));
         button_settings.setBorder(null);
@@ -458,6 +466,7 @@ public class fenetreSettings extends JFrame{
             public void mousePressed(MouseEvent e) {
                 //Remettre page du log in
             }
+
             public void mouseEntered(MouseEvent e) {
                 button_logout.setForeground(Color.WHITE);
             }
@@ -492,7 +501,7 @@ public class fenetreSettings extends JFrame{
         JButton lbl_online = new JButton("Online ");
         lbl_online.setFont(urbanist.deriveFont(Font.BOLD, 20));
         lbl_online.setHorizontalAlignment(SwingConstants.CENTER);
-        lbl_online.setBackground(new Color(0,0,0,0));
+        lbl_online.setBackground(new Color(0, 0, 0, 0));
         lbl_online.setOpaque(false);
         lbl_online.setBorder(null);
         lbl_online.setFocusPainted(false);
@@ -501,7 +510,7 @@ public class fenetreSettings extends JFrame{
         JButton lbl_away = new JButton("Away");
         lbl_away.setFont(urbanist.deriveFont(Font.BOLD, 20));
         lbl_away.setHorizontalAlignment(SwingConstants.CENTER);
-        lbl_away.setBackground(new Color(0,0,0,0));
+        lbl_away.setBackground(new Color(0, 0, 0, 0));
         lbl_away.setOpaque(false);
         lbl_away.setBorder(null);
         lbl_away.setFocusPainted(false);
@@ -513,7 +522,7 @@ public class fenetreSettings extends JFrame{
                 g.setColor(Color.WHITE);
                 g.fillRoundRect(150, 5, 820, 625, 30, 30);
                 g.setColor(new Color(202, 214, 216));
-                g.fillRect(150, 80,820, 3);
+                g.fillRect(150, 80, 820, 3);
 
                 g.setColor(new Color(215, 246, 255));
                 g.drawRoundRect(160, 120, 500, 65, 70, 70);
@@ -552,7 +561,7 @@ public class fenetreSettings extends JFrame{
                 g.fillRect(680, 455, 270, 4);
 
                 //Online
-                if(!isOnline){
+                if (!isOnline) {
                     g.setColor(new Color(133, 229, 255));
                     g.drawRoundRect(825, 485, 120, 40, 30, 30);
                     g.setColor(Color.WHITE);
@@ -560,7 +569,7 @@ public class fenetreSettings extends JFrame{
                     g.setColor(new Color(133, 229, 255));
                     g.fillRoundRect(685, 485, 120, 40, 30, 30);
                 }
-                if (isOnline){
+                if (isOnline) {
                     g.setColor(new Color(133, 229, 255));
                     g.fillRoundRect(685, 485, 120, 40, 30, 30);
                     g.setColor(new Color(133, 229, 255));
@@ -569,7 +578,7 @@ public class fenetreSettings extends JFrame{
                     g.fillRoundRect(825, 485, 120, 40, 30, 30);
                 }
                 //Away
-                if(!isAway) {
+                if (!isAway) {
                     g.setColor(new Color(133, 229, 255));
                     g.drawRoundRect(825, 485, 120, 40, 30, 30);
                     g.setColor(Color.WHITE);
@@ -577,7 +586,7 @@ public class fenetreSettings extends JFrame{
                     g.setColor(new Color(133, 229, 255));
                     g.fillRoundRect(685, 485, 120, 40, 30, 30);
                 }
-                if(isAway) {
+                if (isAway) {
                     g.setColor(new Color(133, 229, 255));
                     g.fillRoundRect(825, 485, 120, 40, 30, 30);
                     g.setColor(new Color(133, 229, 255));
@@ -589,11 +598,11 @@ public class fenetreSettings extends JFrame{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         System.out.println("ok");
-                        if(!isAway){
+                        if (!isAway) {
                             isAway = true;
                             isOnline = false;
                             try {
-                                UserDaoImpl.updateUserAway(ClientHandler.cName);
+                                UserDaoImpl.updateUserAway(clientUser.getUsername());
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -606,11 +615,11 @@ public class fenetreSettings extends JFrame{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         System.out.println("ok");
-                        if(!isOnline){
+                        if (!isOnline) {
                             isOnline = true;
                             isAway = false;
                             try {
-                                UserDaoImpl.updateUserConnected(ClientHandler.cName);
+                                UserDaoImpl.updateUserConnected(clientUser.getUsername());
                             } catch (SQLException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -692,13 +701,13 @@ public class fenetreSettings extends JFrame{
         contentLayout.putConstraint(SpringLayout.WEST, lbl_status_1, 255, SpringLayout.WEST, panel_chat);
 
         contentLayout.putConstraint(SpringLayout.NORTH, lbl_state, 420, SpringLayout.NORTH, panel_chat);
-        contentLayout.putConstraint(SpringLayout.WEST, lbl_state,  785, SpringLayout.WEST, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, lbl_state, 785, SpringLayout.WEST, panel_chat);
 
         contentLayout.putConstraint(SpringLayout.NORTH, lbl_online, 71, SpringLayout.NORTH, lbl_state);
-        contentLayout.putConstraint(SpringLayout.WEST, lbl_online,  710, SpringLayout.WEST, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, lbl_online, 710, SpringLayout.WEST, panel_chat);
 
         contentLayout.putConstraint(SpringLayout.NORTH, lbl_away, 71, SpringLayout.NORTH, lbl_state);
-        contentLayout.putConstraint(SpringLayout.WEST, lbl_away,  145, SpringLayout.WEST, lbl_online);
+        contentLayout.putConstraint(SpringLayout.WEST, lbl_away, 145, SpringLayout.WEST, lbl_online);
 
 
 //TODO FAIRE COMME LA LIGNE D EN DESSOUS POUR RECUPERER LES INFOS SOIT DE LA BDD SOIT DU REGISTER
@@ -782,8 +791,10 @@ public class fenetreSettings extends JFrame{
         panel_chat.setComponentZOrder(lbl_icon_validate2, 0);
 
         add(panel_chat);
-    }
-}*/
+        setVisible(true);
+}
 
 
 
+
+}

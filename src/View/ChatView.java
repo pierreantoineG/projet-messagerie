@@ -23,7 +23,7 @@ public class ChatView extends JFrame {
     private JButton button_chat = new JButton("Chat");
     private JButton button_send = new JButton("");
     private JButton button_users = new JButton("Users");
-    private JButton button_settings = new JButton("Settings");
+    private JButton button_settings = new JButton("Controller.Settings");
     private JButton button_logout = new JButton("Logout");
     private JButton button_reporting = new JButton("Reporting");
     private JLabel lbl_first_name;
@@ -34,9 +34,6 @@ public class ChatView extends JFrame {
     private JLabel lbl_statut;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
-
-
-
 
     static {
         try {
@@ -161,6 +158,7 @@ public class ChatView extends JFrame {
                 int x = 685;
                 int y = 330;
 
+                //TODO FAIRE UNE FONCTION DE TOUT CA
                 for (int i = 0; i < connectedUsers.length; i++) {
 
                     g.setColor(Color.WHITE);
@@ -300,7 +298,6 @@ public class ChatView extends JFrame {
         button_send.setBackground(new Color(0, 0, 0, 0));
         button_send.setPreferredSize(new Dimension(25, 25));
 
-
         //Bouton chat
         button_chat.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_chat.setBackground(new Color(0, 0, 0, 0));
@@ -308,15 +305,12 @@ public class ChatView extends JFrame {
         button_chat.setContentAreaFilled(false);
         button_chat.setOpaque(false);
 
-
-
         //Bouton users
         button_users.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_users.setOpaque(false);
         button_users.setContentAreaFilled(false);
         button_users.setBackground(new Color(0, 0, 0, 0));
         button_users.setBorder(null);
-
 
         //Bouton settings
         button_settings.setFont(urbanist.deriveFont(Font.BOLD, 19));

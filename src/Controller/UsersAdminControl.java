@@ -1,7 +1,7 @@
 package Controller;
 
 import Model.Client;
-import View.ChatView;
+import View.UsersAdminView;
 import View.UsersView;
 
 import javax.swing.*;
@@ -14,9 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class UsersControl {
+public class UsersAdminControl {
 
-    UsersView usersView;
+    UsersAdminView usersAdminView;
     private Client clientUser;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
 
@@ -30,16 +30,16 @@ public class UsersControl {
         }
     }
 
-    public UsersControl(UsersView usersView, Client client) {
-        this.usersView = usersView;
+    public UsersAdminControl(UsersAdminView usersAdminView, Client client) {
+        this.usersAdminView = usersAdminView;
         clientUser = client;
     }
 
     public void initializeUsersView(String cName) {
 
-        JButton button_chat = usersView.getButton_chat();
+        JButton button_chat = usersAdminView.getButton_chat();
         button_chat.addMouseListener(new MouseAdapter() {
-            @Override
+
             public void mousePressed(MouseEvent e) {
                 //Afficher page chat
             }
@@ -53,14 +53,13 @@ public class UsersControl {
             }
         });
 
-        JButton button_users = usersView.getButton_users();
+        JButton button_users = usersAdminView.getButton_users();
         button_users.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //Rien ne se passe
             }
         });
-
         button_users.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 button_users.setForeground(Color.WHITE);
@@ -71,7 +70,7 @@ public class UsersControl {
             }
         });
 
-        JButton button_settings = usersView.getButton_settings();
+        JButton button_settings = usersAdminView.getButton_settings();
         button_settings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,7 +92,7 @@ public class UsersControl {
             }
         });
 
-        JButton button_logout = usersView.getButton_logout();
+        JButton button_logout = usersAdminView.getButton_logout();
         button_logout.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -110,7 +109,7 @@ public class UsersControl {
         });
 
 
-        JButton button_reporting = usersView.getButton_reporting();
+        JButton button_reporting = usersAdminView.getButton_reporting();
         button_reporting.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -126,7 +125,7 @@ public class UsersControl {
             }
         });
 
-        usersView.setVisible(true);
+        usersAdminView.setVisible(true);
     }
 }
 

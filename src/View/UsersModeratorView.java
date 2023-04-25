@@ -1,4 +1,8 @@
-/*import javax.swing.*;
+package View;
+
+import Dao.UserDaoImpl;
+
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,199 +13,72 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class fenetreUsers {
+public class UsersModeratorView  extends JFrame {
+
     private static boolean isBan = false;
     private static boolean isUban = false;
+    private static boolean isAdmin = false;
+    private static boolean isModo = false;
+    private static boolean isUser = false;
+    static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
+    static Font urbanist;
 
-    public static void main(String[] args) throws IOException, FontFormatException, SQLException {
+    static {
+        try {
+            urbanist = Font.createFont(Font.TRUETYPE_FONT, font);
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        //Font
-        File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
-        Font urbanist = Font.createFont(Font.TRUETYPE_FONT, font);
+    private JButton button_chat = new JButton("Chat");
+    private JButton button_users = new JButton("Users");
+    private JButton button_settings = new JButton("Settings");
+    private JButton button_logout = new JButton("Log out");
+    private JButton button_reporting = new JButton("Reporting");
 
-        //Image logo
-        ImageIcon logo = new ImageIcon("Icons/LogoChatOeuf.png");
-        JLabel lbl_logo = new JLabel(new ImageIcon(logo.getImage()));
+    public JButton getButton_chat() {
+        return button_chat;
+    }
 
-        //Image icon chat
-        ImageIcon img_icon_chat = new ImageIcon("Icons/icon_chat_conv.png");
-        JLabel lbl_icon_chat = new JLabel(new ImageIcon(img_icon_chat.getImage()));
+    public JButton getButton_users() {
+        return button_users;
+    }
 
-        //Image icon users
-        ImageIcon img_icon_users = new ImageIcon("Icons/icon_users.png");
-        JLabel lbl_icon_users = new JLabel(new ImageIcon(img_icon_users.getImage()));
+    public JButton getButton_settings() {
+        return button_settings;
+    }
 
-        //Image icon settings
-        ImageIcon img_icon_settings = new ImageIcon("Icons/icon_settings.png");
-        JLabel lbl_icon_settings = new JLabel(new ImageIcon(img_icon_settings.getImage()));
+    public JButton getButton_logout() {
+        return button_logout;
+    }
+    public JButton getButton_reporting(){
+        return button_reporting;
+    }
+    public Font getUrbanist(){
+        return urbanist;
+    }
 
-        //Image icon log out
-        ImageIcon img_icon_logout = new ImageIcon("Icons/icon_logout.png");
-        JLabel lbl_icon_logout = new JLabel(new ImageIcon(img_icon_logout.getImage()));
+    public UsersModeratorView() throws IOException, FontFormatException, SQLException {
 
-        //Image icon reporting
-        ImageIcon img_icon_reporting = new ImageIcon("Icons/icon_reporting.png");
-        JLabel lbl_icon_reporting = new JLabel(new ImageIcon(img_icon_reporting.getImage()));
-
-        //Texte 1
-        JLabel lbl_user_community = new JLabel("User community");
-        lbl_user_community.setFont(urbanist.deriveFont(Font.BOLD, 30));
-        lbl_user_community.setHorizontalAlignment(SwingConstants.CENTER);
-
-        //Texte 2
-        JLabel lbl_admin = new JLabel("Administrator ");
-        lbl_admin.setFont(urbanist.deriveFont(Font.BOLD, 20));
-        lbl_admin.setHorizontalAlignment(SwingConstants.CENTER);
-
-        //Texte 3
-        JLabel lbl_moderator = new JLabel("Moderator ");
-        lbl_moderator.setFont(urbanist.deriveFont(Font.BOLD, 20));
-        lbl_moderator.setHorizontalAlignment(SwingConstants.CENTER);
-
-        //Texte 4
-        JLabel lbl_nb_users = new JLabel("Number of users ");
-        lbl_nb_users.setFont(urbanist.deriveFont(Font.BOLD, 20));
-        lbl_nb_users.setHorizontalAlignment(SwingConstants.CENTER);
-
-        //Texte 5
-        JLabel lbl_nb_registered = new JLabel(); //creer variable qui recupere nb de users enregistres sur la bdd
-        lbl_nb_registered.setFont(urbanist.deriveFont(Font.BOLD, 38));
-        lbl_nb_registered.setForeground(new Color(0, 245, 212));
-        lbl_nb_registered.setHorizontalAlignment(SwingConstants.CENTER);
-        lbl_nb_registered.setBorder(null);
-        lbl_nb_registered.setOpaque(false);
-        lbl_nb_registered.setBackground(new Color(0, 0, 0, 0));
-        lbl_nb_registered.setText(UserDaoImpl.countUsers() + " registered");
-
-        JTextArea chatArea = new JTextArea();
-        chatArea.setEditable(false);
-        chatArea.setBackground(Color.WHITE);
-        //Scroll Pane
-        JScrollPane scrollPane_chat = new JScrollPane(chatArea);
-        scrollPane_chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane_chat.setPreferredSize(new Dimension(510, 540));
-        scrollPane_chat.setBorder(null);
-
-        //Boutons
-        //Bouton chat
-        JButton button_chat = new JButton("Chat");
-        button_chat.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_chat.setBackground(new Color(0, 0, 0, 0));
-        button_chat.setBorder(null);
-        button_chat.setContentAreaFilled(false);
-        button_chat.setOpaque(false);
-        button_chat.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-            }
-            public void mouseEntered(MouseEvent e) {
-                button_chat.setForeground(Color.WHITE);
-            }
-            public void mouseExited(MouseEvent e) {
-                button_chat.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
-            }
-        });
-
-
-        //Bouton users
-        JButton button_users = new JButton("Users");
-        button_users.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_users.setOpaque(false);
-        button_users.setContentAreaFilled(false);
-        button_users.setBackground(new Color(0, 0, 0, 0));
-        button_users.setBorder(null);
-        button_users.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Rien ne se passe
-            }
-        });
-
-        button_users.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                button_users.setForeground(Color.WHITE);
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button_users.setForeground(Color.BLACK);
-            }
-        });
-
-        //Bouton settings
-        JButton button_settings = new JButton("Settings");
-        button_settings.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_settings.setBackground(new Color(0, 0, 0, 0));
-        button_settings.setBorder(null);
-        button_settings.setOpaque(false);
-        button_settings.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fenetreSettings f1 = null;
-                try {
-                    f1 = new fenetreSettings();
-                } catch (IOException | FontFormatException | SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-                f1.setVisible(true);
-            }
-        });
-        button_settings.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                button_settings.setForeground(Color.WHITE);
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button_settings.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
-            }
-        });
-
-        //Bouton log out
-        JButton button_logout = new JButton("Log out");
-        button_logout.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_logout.setBackground(new Color(0, 0, 0, 0));
-        button_logout.setBorder(null);
-        button_logout.setOpaque(false);
-        button_logout.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Remettre la page du log in
-            }
-            public void mouseEntered(MouseEvent e) {
-                button_logout.setForeground(Color.WHITE);
-            }
-            public void mouseExited(MouseEvent e) {
-                button_logout.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
-            }
-        });
-
-        //Bouton reporting
-        JButton button_reporting = new JButton("Reporting");
-        button_reporting.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_reporting.setBackground(new Color(0, 0, 0, 0));
-        button_reporting.setBorder(null);
-        button_reporting.setOpaque(false);
-        button_reporting.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher report
-            }
-            public void mouseEntered(MouseEvent e) {
-                button_reporting.setForeground(Color.WHITE);
-            }
-            public void mouseExited(MouseEvent e) {
-                button_reporting.setForeground(Color.BLACK);
-            }
-        });
+        //Création de la fenêtre
+        setSize(1000, 680);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
 
         String[] moderatorUsers;
         String[] administratorUsers;
         Object[][] userInfo;
+        String[] bannedUsers;
+        String[] unbannedUsers;
 
         try {
             moderatorUsers = UserDaoImpl.getRoleModeratorUsers();
             administratorUsers = UserDaoImpl.getAdmim();
             userInfo = UserDaoImpl.getUserStatus();
+            bannedUsers = UserDaoImpl.getBannedUsers();
+            unbannedUsers = UserDaoImpl.getUnBannedUsers();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -222,6 +99,11 @@ public class fenetreUsers {
         panel_grid2.setOpaque(false);
         System.out.println(userInfo.length);
 
+        JPanel panel_grid3 = new JPanel(new GridLayout(userInfo.length, 1));
+        panel_grid3.setOpaque(false);
+
+        JPanel panel_grid4 = new JPanel(new GridLayout(userInfo.length, 1));
+        panel_grid4.setOpaque(false);
 
         JPanel panel_chat = new JPanel() {
             public void paintComponent(Graphics g) {
@@ -234,6 +116,8 @@ public class fenetreUsers {
 
                 int x = 160;
                 int y = 90;
+                int x_ban = 580;
+                int y_ban = 100;
                 int x1 = 170;
                 int y1 = 105;
 
@@ -265,15 +149,70 @@ public class fenetreUsers {
                     username1.setForeground(new Color(0, 245, 212));
                     username1.setEditable(false);
 
+                    if (banned == 0) {
+                        String currentUser = username;
+                        JButton ban = new JButton("Ban");
+                        ban.setFont(urbanist.deriveFont(Font.BOLD, 14));
+                        ban.setBackground(new Color(0, 0, 0, 0));
+                        ban.setForeground(Color.WHITE);
+                        ban.setBorder(null);
+                        ban.setOpaque(false);
+                        ban.setBorder(new EmptyBorder(0, 0, 38, 0));
+                        ban.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                isBan = true;
+                                try {
+                                    UserDaoImpl.banUser(currentUser, true);
+                                } catch (SQLException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                //;
+                            }
+
+                        });
+                        panel_grid4.add(ban);
+                    } else {
+                        JButton unbanned = new JButton("Unban");
+                        //ban.setActionCommand("a");
+                        unbanned.setFont(urbanist.deriveFont(Font.BOLD, 14));
+                        unbanned.setBackground(new Color(0, 0, 0, 0));
+                        unbanned.setForeground(Color.WHITE);
+                        unbanned.setBorder(null);
+                        unbanned.setOpaque(false);
+                        unbanned.setBorder(new EmptyBorder(0, 0, 38, 0));
+                        String currentUser = username;
+                        unbanned.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                unbanned.setText("Ban");
+                                try {
+                                    UserDaoImpl.UnbanUser(currentUser, true);
+                                } catch (SQLException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+                        });
+
+                        panel_grid4.add(unbanned);
+                    }
+                    //Image ban
+                    ImageIcon img_ban = new ImageIcon("Icons/icon_bannir.png");
+                    JLabel lbl_ban = new JLabel(new ImageIcon(img_ban.getImage()));
+                    lbl_ban.setBorder(new EmptyBorder(0, 0, 35, 0));
+                    panel_grid3.add(lbl_ban);
 
                     g.setColor(new Color(133, 229, 255));
                     g.drawRoundRect(x, y, 500, 45, 30, 30);
                     g.setColor(Color.WHITE);
                     g.fillRoundRect(x, y, 500, 45, 30, 30);
+                    g.setColor(new Color(239, 72, 72));
+                    g.fillRoundRect(x_ban, y_ban, 75, 25, 20, 20);
                     y += 55;
+                    y_ban += 55;
 
                     g.setColor(color);
-                    g.fillOval(x1,y1,10,10);
+                    g.fillOval(x1, y1, 10, 10);
                     y1 += 55;
                 }
 
@@ -361,6 +300,103 @@ public class fenetreUsers {
 
             }
         };
+
+        //Image logo
+        ImageIcon logo = new ImageIcon("Icons/LogoChatOeuf.png");
+        JLabel lbl_logo = new JLabel(new ImageIcon(logo.getImage()));
+
+        //Image icon chat
+        ImageIcon img_icon_chat = new ImageIcon("Icons/icon_chat_conv.png");
+        JLabel lbl_icon_chat = new JLabel(new ImageIcon(img_icon_chat.getImage()));
+
+        //Image icon users
+        ImageIcon img_icon_users = new ImageIcon("Icons/icon_users.png");
+        JLabel lbl_icon_users = new JLabel(new ImageIcon(img_icon_users.getImage()));
+
+        //Image icon settings
+        ImageIcon img_icon_settings = new ImageIcon("Icons/icon_settings.png");
+        JLabel lbl_icon_settings = new JLabel(new ImageIcon(img_icon_settings.getImage()));
+
+        //Image icon log out
+        ImageIcon img_icon_logout = new ImageIcon("Icons/icon_logout.png");
+        JLabel lbl_icon_logout = new JLabel(new ImageIcon(img_icon_logout.getImage()));
+
+        //Image icon reporting
+        ImageIcon img_icon_reporting = new ImageIcon("Icons/icon_reporting.png");
+        JLabel lbl_icon_reporting = new JLabel(new ImageIcon(img_icon_reporting.getImage()));
+
+        //Texte 1
+        JLabel lbl_user_community = new JLabel("User community");
+        lbl_user_community.setFont(urbanist.deriveFont(Font.BOLD, 30));
+        lbl_user_community.setHorizontalAlignment(SwingConstants.CENTER);
+
+        //Texte 2
+        JLabel lbl_admin = new JLabel("Administrator ");
+        lbl_admin.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        lbl_admin.setHorizontalAlignment(SwingConstants.CENTER);
+
+        //Texte 3
+        JLabel lbl_moderator = new JLabel("Moderator ");
+        lbl_moderator.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        lbl_moderator.setHorizontalAlignment(SwingConstants.CENTER);
+
+        //Texte 4
+        JLabel lbl_nb_users = new JLabel("Number of users ");
+        lbl_nb_users.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        lbl_nb_users.setHorizontalAlignment(SwingConstants.CENTER);
+
+        //Texte 5
+        JLabel lbl_nb_registered = new JLabel(); //creer variable qui recupere nb de users enregistres sur la bdd
+        lbl_nb_registered.setFont(urbanist.deriveFont(Font.BOLD, 38));
+        lbl_nb_registered.setForeground(new Color(0, 245, 212));
+        lbl_nb_registered.setHorizontalAlignment(SwingConstants.CENTER);
+        lbl_nb_registered.setBorder(null);
+        lbl_nb_registered.setOpaque(false);
+        lbl_nb_registered.setBackground(new Color(0, 0, 0, 0));
+        lbl_nb_registered.setText(UserDaoImpl.countUsers() + " registered");
+
+        JTextArea chatArea = new JTextArea();
+        chatArea.setEditable(false);
+        chatArea.setBackground(Color.WHITE);
+        //Scroll Pane
+        JScrollPane scrollPane_chat = new JScrollPane(chatArea);
+        scrollPane_chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane_chat.setPreferredSize(new Dimension(510, 540));
+        scrollPane_chat.setBorder(null);
+
+        //Boutons
+        //Bouton chat
+        button_chat.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_chat.setBackground(new Color(0, 0, 0, 0));
+        button_chat.setBorder(null);
+        button_chat.setContentAreaFilled(false);
+        button_chat.setOpaque(false);
+
+        //Bouton users
+        button_users.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_users.setOpaque(false);
+        button_users.setContentAreaFilled(false);
+        button_users.setBackground(new Color(0, 0, 0, 0));
+        button_users.setBorder(null);
+
+        //Bouton settings
+        button_settings.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_settings.setBackground(new Color(0, 0, 0, 0));
+        button_settings.setBorder(null);
+        button_settings.setOpaque(false);
+
+        //Bouton log out
+        button_logout.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_logout.setBackground(new Color(0, 0, 0, 0));
+        button_logout.setBorder(null);
+        button_logout.setOpaque(false);
+
+        //Bouton reporting
+        button_reporting.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_reporting.setBackground(new Color(0, 0, 0, 0));
+        button_reporting.setBorder(null);
+        button_reporting.setOpaque(false);
+
         panel_chat.setBackground(new Color(0, 187, 249));
         panel_chat.setLayout(new SpringLayout());
 
@@ -385,12 +421,14 @@ public class fenetreUsers {
         panel_chat.add(panel_grid);
         panel_chat.add(panel_grid1);
         panel_chat.add(panel_grid2);
+        panel_chat.add(panel_grid3);
+        panel_chat.add(panel_grid4);
         panel_chat.setComponentZOrder(panel_grid, 0);
         panel_chat.setComponentZOrder(panel_grid1, 0);
         //panel_chat.setComponentZOrder(panel_grid3, 0);
         panel_chat.setComponentZOrder(panel_grid2, 0);
 
-        //TODO Définir les contraintes pour chaque composant pour le contentPanel uniquement
+        // Défini les contraintes pour chaque composant pour le contentPanel uniquement
         SpringLayout contentLayout = (SpringLayout) panel_chat.getLayout();
 
         contentLayout.putConstraint(SpringLayout.NORTH, lbl_logo, 40, SpringLayout.NORTH, panel_chat);
@@ -455,18 +493,18 @@ public class fenetreUsers {
         contentLayout.putConstraint(SpringLayout.NORTH, panel_grid2, 100, SpringLayout.NORTH, panel_chat);
         contentLayout.putConstraint(SpringLayout.WEST, panel_grid2, 190, SpringLayout.WEST, panel_chat);
 
-        //Création de la fenêtre
-        JFrame frame = new JFrame();
-        frame.setSize(1000, 680);
-        frame.add(panel_chat);
-        frame.revalidate();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        contentLayout.putConstraint(SpringLayout.NORTH, panel_grid3, 102, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, panel_grid3, 583, SpringLayout.WEST, panel_chat);
+
+        contentLayout.putConstraint(SpringLayout.NORTH, panel_grid4, 100, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, panel_grid4, 608, SpringLayout.WEST, panel_chat);
+
+        add(panel_chat);
+        revalidate();
 
     }
 
-    private boolean toggleBanUser(int userId, boolean isBanned) {
+    /*private boolean toggleBanUser(int userId, boolean isBanned) {
         try {
             Connection connection = DriverManager.getConnection(url, login, passwd);
             String updateQuery = "UPDATE users SET banned = ? WHERE id = ?";
@@ -480,6 +518,9 @@ public class fenetreUsers {
             ex.printStackTrace();
             return false;
         }
-    }
-}*/
+    }*/
+}
+
+
+
 

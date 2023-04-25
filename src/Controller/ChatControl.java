@@ -3,6 +3,8 @@ package Controller;
 import Dao.UserDaoImpl;
 import Model.*;
 import View.ChatView;
+import View.UsersModeratorView;
+import View.UsersView;
 
 
 import javax.swing.*;
@@ -30,8 +32,6 @@ public class ChatControl extends IOException {
     private static int numPort = 1000;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
-
-
 
     static {
         try {
@@ -91,9 +91,32 @@ public class ChatControl extends IOException {
         button_users.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Afficher view1 si User
-                //Afficher view2 si Moderator
-                //Afficher view3 si Admin
+                try {
+                    String role = UserDaoImpl.getRole(clientUser.getUsername());
+                    if(role.equals("Administrator")){
+                        /*UsersView usersView = new UsersView();
+                        UsersControl usersControl = new UsersControl(usersView, clientUser);
+                        usersControl.initializeUsersView(clientUser.getUsername());*/
+                        FenetreUsersAdmin fenetreUsersAdmin = new FenetreUsersAdmin(clientUser);
+                        fenetreUsersAdmin.initialize();
+                    }
+                    else if(role.equals("Moderator")){
+                        /*UsersModeratorView usersModeratorView = new UsersModeratorView();
+                        UsersModeratorControl usersModeratorControl = new UsersModeratorControl(usersModeratorView, clientUser);
+                        usersModeratorControl.initializeUsersView(clientUser.getUsername());*/
+                        FenetreUsersModerator fenetreUsersModerator = new FenetreUsersModerator(clientUser);
+                        fenetreUsersModerator.initialize();
+                    }
+                    else if(role.equals("User")){
+                        /*UsersView usersView = new UsersView();
+                        UsersControl usersControl = new UsersControl(usersView, clientUser);
+                        usersControl.initializeUsersView(clientUser.getUsername());*/
+                        FenetreUsers fenetreUsers = new FenetreUsers(clientUser);
+                        fenetreUsers.initialize();
+                    }
+                } catch (SQLException | IOException | FontFormatException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -110,20 +133,18 @@ public class ChatControl extends IOException {
         JButton button_settings = chatView.getButton_settings();
         UseMouse(button_settings);
         // TODO: CHANGER CA
-        /*button_settings.addActionListener(new ActionListener() {
+        button_settings.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                fenetreSettings f1 = null;
                 try {
-                    f1 = new fenetreSettings();
-                } catch (IOException | FontFormatException | SQLException ex) {
+                    Settings settings = new Settings(clientUser);
+                    settings.initializeSettings();
+                } catch (SQLException | IOException | FontFormatException ex) {
                     throw new RuntimeException(ex);
                 }
-                dispose();
-                f1.setVisible(true);
             }
-        });*/
+        });
         button_settings.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 button_settings.setForeground(Color.WHITE);

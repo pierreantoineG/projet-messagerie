@@ -1,7 +1,8 @@
 package Controller;
 
 import Model.Client;
-import View.ChatView;
+import View.UsersAdminView;
+import View.UsersModeratorView;
 import View.UsersView;
 
 import javax.swing.*;
@@ -14,9 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class UsersControl {
+public class UsersModeratorControl {
 
-    UsersView usersView;
+    UsersModeratorView usersModeratorView;
     private Client clientUser;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
 
@@ -30,30 +31,28 @@ public class UsersControl {
         }
     }
 
-    public UsersControl(UsersView usersView, Client client) {
-        this.usersView = usersView;
+    public UsersModeratorControl(UsersModeratorView usersModeratorView, Client client) {
+        this.usersModeratorView = usersModeratorView;
         clientUser = client;
     }
 
     public void initializeUsersView(String cName) {
 
-        JButton button_chat = usersView.getButton_chat();
+        JButton button_chat = usersModeratorView.getButton_chat();
         button_chat.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 //Afficher page chat
             }
-
             public void mouseEntered(MouseEvent e) {
                 button_chat.setForeground(Color.WHITE);
             }
-
             public void mouseExited(MouseEvent e) {
                 button_chat.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
             }
         });
 
-        JButton button_users = usersView.getButton_users();
+        JButton button_users = usersModeratorView.getButton_users();
         button_users.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,7 +70,7 @@ public class UsersControl {
             }
         });
 
-        JButton button_settings = usersView.getButton_settings();
+        JButton button_settings = usersModeratorView.getButton_settings();
         button_settings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,40 +92,36 @@ public class UsersControl {
             }
         });
 
-        JButton button_logout = usersView.getButton_logout();
+        JButton button_logout = usersModeratorView.getButton_logout();
         button_logout.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 //Remettre la page du log in
             }
-
             public void mouseEntered(MouseEvent e) {
                 button_logout.setForeground(Color.WHITE);
             }
-
             public void mouseExited(MouseEvent e) {
                 button_logout.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
             }
         });
 
 
-        JButton button_reporting = usersView.getButton_reporting();
+        JButton button_reporting = usersModeratorView.getButton_reporting();
         button_reporting.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 //Afficher report
             }
-
             public void mouseEntered(MouseEvent e) {
                 button_reporting.setForeground(Color.WHITE);
             }
-
             public void mouseExited(MouseEvent e) {
                 button_reporting.setForeground(Color.BLACK);
             }
         });
 
-        usersView.setVisible(true);
+        usersModeratorView.setVisible(true);
     }
 }
 
