@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import java.awt.*;
@@ -398,7 +399,8 @@ public class UserDaoImpl implements UserDao {
         while (resultSet.next()) {
             lastTimeConnection = resultSet.getTimestamp("last_Connection");
         }
-        String strTimestamp = lastTimeConnection.toString();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String strTimestamp = formatter.format(lastTimeConnection);
         return strTimestamp;
     }
 
