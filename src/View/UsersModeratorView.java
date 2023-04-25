@@ -1,17 +1,25 @@
 package View;
 
-import Dao.*;
+import Dao.UserDaoImpl;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class UsersView extends JFrame {
+public class UsersModeratorView  extends JFrame {
+
     private static boolean isBan = false;
     private static boolean isUban = false;
-    private JPanel chat_panel;
+    private static boolean isAdmin = false;
+    private static boolean isModo = false;
+    private static boolean isUser = false;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
 
@@ -22,11 +30,12 @@ public class UsersView extends JFrame {
             throw new RuntimeException(e);
         }
     }
-    JButton button_chat = new JButton("Chat");
-    JButton button_users = new JButton("Users");
-    JButton button_settings = new JButton("Settings");
-    JButton button_logout = new JButton("Log out");
-    JButton button_reporting = new JButton("Reporting");
+
+    private JButton button_chat = new JButton("Chat");
+    private JButton button_users = new JButton("Users");
+    private JButton button_settings = new JButton("Settings");
+    private JButton button_logout = new JButton("Log out");
+    private JButton button_reporting = new JButton("Reporting");
 
     public JButton getButton_chat() {
         return button_chat;
@@ -50,7 +59,7 @@ public class UsersView extends JFrame {
         return urbanist;
     }
 
-    public UsersView() throws IOException, FontFormatException, SQLException {
+    public UsersModeratorView() throws IOException, FontFormatException, SQLException {
 
         //Création de la fenêtre
         setSize(1000, 680);
@@ -61,11 +70,15 @@ public class UsersView extends JFrame {
         String[] moderatorUsers;
         String[] administratorUsers;
         Object[][] userInfo;
+        String[] bannedUsers;
+        String[] unbannedUsers;
 
         try {
             moderatorUsers = UserDaoImpl.getRoleModeratorUsers();
             administratorUsers = UserDaoImpl.getAdmim();
             userInfo = UserDaoImpl.getUserStatus();
+            bannedUsers = UserDaoImpl.getBannedUsers();
+            unbannedUsers = UserDaoImpl.getUnBannedUsers();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -86,6 +99,12 @@ public class UsersView extends JFrame {
         panel_grid2.setOpaque(false);
         System.out.println(userInfo.length);
 
+        JPanel panel_grid3 = new JPanel(new GridLayout(userInfo.length, 1));
+        panel_grid3.setOpaque(false);
+
+        JPanel panel_grid4 = new JPanel(new GridLayout(userInfo.length, 1));
+        panel_grid4.setOpaque(false);
+
         JPanel panel_chat = new JPanel() {
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -97,10 +116,10 @@ public class UsersView extends JFrame {
 
                 int x = 160;
                 int y = 90;
+                int x_ban = 580;
+                int y_ban = 100;
                 int x1 = 170;
                 int y1 = 105;
-
-                //TODO FAIRE UNE FONCTION
 
                 for (Object[] user : userInfo) {
                     String name = (String) user[0];
@@ -130,18 +149,72 @@ public class UsersView extends JFrame {
                     username1.setForeground(new Color(0, 245, 212));
                     username1.setEditable(false);
 
+                    if (banned == 0) {
+                        String currentUser = username;
+                        JButton ban = new JButton("Ban");
+                        ban.setFont(urbanist.deriveFont(Font.BOLD, 14));
+                        ban.setBackground(new Color(0, 0, 0, 0));
+                        ban.setForeground(Color.WHITE);
+                        ban.setBorder(null);
+                        ban.setOpaque(false);
+                        ban.setBorder(new EmptyBorder(0, 0, 38, 0));
+                        ban.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                isBan = true;
+                                try {
+                                    UserDaoImpl.banUser(currentUser, true);
+                                } catch (SQLException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                //;
+                            }
+
+                        });
+                        panel_grid4.add(ban);
+                    } else {
+                        JButton unbanned = new JButton("Unban");
+                        //ban.setActionCommand("a");
+                        unbanned.setFont(urbanist.deriveFont(Font.BOLD, 14));
+                        unbanned.setBackground(new Color(0, 0, 0, 0));
+                        unbanned.setForeground(Color.WHITE);
+                        unbanned.setBorder(null);
+                        unbanned.setOpaque(false);
+                        unbanned.setBorder(new EmptyBorder(0, 0, 38, 0));
+                        String currentUser = username;
+                        unbanned.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                unbanned.setText("Ban");
+                                try {
+                                    UserDaoImpl.UnbanUser(currentUser, true);
+                                } catch (SQLException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+                        });
+
+                        panel_grid4.add(unbanned);
+                    }
+                    //Image ban
+                    ImageIcon img_ban = new ImageIcon("Icons/icon_bannir.png");
+                    JLabel lbl_ban = new JLabel(new ImageIcon(img_ban.getImage()));
+                    lbl_ban.setBorder(new EmptyBorder(0, 0, 35, 0));
+                    panel_grid3.add(lbl_ban);
+
                     g.setColor(new Color(133, 229, 255));
                     g.drawRoundRect(x, y, 500, 45, 30, 30);
                     g.setColor(Color.WHITE);
                     g.fillRoundRect(x, y, 500, 45, 30, 30);
+                    g.setColor(new Color(239, 72, 72));
+                    g.fillRoundRect(x_ban, y_ban, 75, 25, 20, 20);
                     y += 55;
+                    y_ban += 55;
 
                     g.setColor(color);
                     g.fillOval(x1, y1, 10, 10);
                     y1 += 55;
                 }
-
-                //TODO FAIRE UNE FONCTION
 
                 //Administrateur
                 g.setColor(new Color(174, 240, 255));
@@ -177,7 +250,6 @@ public class UsersView extends JFrame {
                     }
                 }
 
-                //TODO FAIRE UNE FONCTION
                 //Moderateur
                 g.setColor(new Color(174, 240, 255));
                 g.fillRoundRect(675, 195, 305, 180, 30, 30);
@@ -229,7 +301,6 @@ public class UsersView extends JFrame {
             }
         };
 
-
         //Image logo
         ImageIcon logo = new ImageIcon("Icons/LogoChatOeuf.png");
         JLabel lbl_logo = new JLabel(new ImageIcon(logo.getImage()));
@@ -275,7 +346,6 @@ public class UsersView extends JFrame {
         lbl_nb_users.setHorizontalAlignment(SwingConstants.CENTER);
 
         //Texte 5
-
         JLabel lbl_nb_registered = new JLabel(); //creer variable qui recupere nb de users enregistres sur la bdd
         lbl_nb_registered.setFont(urbanist.deriveFont(Font.BOLD, 38));
         lbl_nb_registered.setForeground(new Color(0, 245, 212));
@@ -296,7 +366,6 @@ public class UsersView extends JFrame {
 
         //Boutons
         //Bouton chat
-
         button_chat.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_chat.setBackground(new Color(0, 0, 0, 0));
         button_chat.setBorder(null);
@@ -352,12 +421,14 @@ public class UsersView extends JFrame {
         panel_chat.add(panel_grid);
         panel_chat.add(panel_grid1);
         panel_chat.add(panel_grid2);
+        panel_chat.add(panel_grid3);
+        panel_chat.add(panel_grid4);
         panel_chat.setComponentZOrder(panel_grid, 0);
         panel_chat.setComponentZOrder(panel_grid1, 0);
         //panel_chat.setComponentZOrder(panel_grid3, 0);
         panel_chat.setComponentZOrder(panel_grid2, 0);
 
-        //TODO Définir les contraintes pour chaque composant pour le contentPanel uniquement
+        // Défini les contraintes pour chaque composant pour le contentPanel uniquement
         SpringLayout contentLayout = (SpringLayout) panel_chat.getLayout();
 
         contentLayout.putConstraint(SpringLayout.NORTH, lbl_logo, 40, SpringLayout.NORTH, panel_chat);
@@ -422,12 +493,18 @@ public class UsersView extends JFrame {
         contentLayout.putConstraint(SpringLayout.NORTH, panel_grid2, 100, SpringLayout.NORTH, panel_chat);
         contentLayout.putConstraint(SpringLayout.WEST, panel_grid2, 190, SpringLayout.WEST, panel_chat);
 
+        contentLayout.putConstraint(SpringLayout.NORTH, panel_grid3, 102, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, panel_grid3, 583, SpringLayout.WEST, panel_chat);
+
+        contentLayout.putConstraint(SpringLayout.NORTH, panel_grid4, 100, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, panel_grid4, 608, SpringLayout.WEST, panel_chat);
+
         add(panel_chat);
         revalidate();
+
     }
 
-    /*
-    private boolean toggleBanUser(int userId, boolean isBanned) {
+    /*private boolean toggleBanUser(int userId, boolean isBanned) {
         try {
             Connection connection = DriverManager.getConnection(url, login, passwd);
             String updateQuery = "UPDATE users SET banned = ? WHERE id = ?";
@@ -443,4 +520,7 @@ public class UsersView extends JFrame {
         }
     }*/
 }
+
+
+
 

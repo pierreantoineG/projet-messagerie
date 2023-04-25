@@ -31,8 +31,6 @@ public class ChatControl extends IOException {
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
 
-
-
     static {
         try {
             urbanist = Font.createFont(Font.TRUETYPE_FONT, font);
