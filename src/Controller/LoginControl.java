@@ -1,5 +1,6 @@
 package Controller;
 
+import Dao.UserDaoImpl;
 import View.*;
 import Model.*;
 
@@ -16,16 +17,17 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
-import java.util.Scanner;
 
 public class LoginControl {
     private LoginView loginView;
 
+    private ChatControl chatControl;
+
     private Client clientUser;
 
-    private final String url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
-    private final String login = "pgloulou";
-    private final String passwd = "Malouise17";
+    private static String url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
+    private static String login = "pgloulou";
+    private static String passwd = "Malouise17";
 
     public LoginControl(LoginView loginView) {
         this.loginView = loginView;
@@ -60,19 +62,36 @@ public class LoginControl {
 
 //                String handle = loginView.getHandleField().getText();
 //                char[] password = loginView.getPasswordField().getPassword();
-                clientUser.setTypeUser(VerifLogin(clientUser.getUsername(), clientUser.getPassword()));
+
+                try {
+                    clientUser.setTypeUser(UserDaoImpl.VerifLogin(clientUser.getUsername(), clientUser.getPassword()));
+                } catch (SQLException | NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                    throw new RuntimeException(ex);
+                }
 
                 if (clientUser.getTypeUser() != -1) {
                     if (clientUser.getTypeUser() == 1) {
                         //displayAdminView();
-                        displayUserView(clientUser.getUsername());
+                        try {
+                            displayUserView(clientUser.getUsername());
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         loginView.setVisible(false);
                     } else if (clientUser.getTypeUser() == 2) {
                         //displayModeratorView();
-                        displayUserView(clientUser.getUsername());
+                        try {
+                            displayUserView(clientUser.getUsername());
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         loginView.setVisible(false);
                     } else {
-                        displayUserView(clientUser.getUsername());
+                        try {
+                            displayUserView(clientUser.getUsername());
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         loginView.setVisible(false);
                     }
                 } else {
@@ -98,12 +117,16 @@ public class LoginControl {
 //                String email = loginView.getEmail().getText();
 //                String handle = loginView.getHandleFieldRegister().getText();
 //                char[] password = loginView.getPasswordFieldRegister().getPassword();
-                int role = 3;
-                clientUser.setId(role);
+                //int role = 3;
+                //clientUser.setRole(role);
 
-                if (registerUser(clientUser.getFirst_name(), clientUser.getLast_name(), clientUser.getEmail(), clientUser.getUsername(), clientUser.getPassword(), clientUser.getTypeUser())) {
+                if (registerUser(clientUser.getFirst_name(), clientUser.getLast_name(), clientUser.getEmail(), clientUser.getUsername(), clientUser.getPassword())) {
                     JOptionPane.showMessageDialog(null, "Utilisateur enregistré avec succès.");
-                    displayUserView(clientUser.getUsername());
+                    try {
+                        displayUserView(clientUser.getUsername());
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     loginView.setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(null, "Erreur lors de l'enregistrement de l'utilisateur.");
@@ -197,7 +220,7 @@ public class LoginControl {
         });
     }
 
-    public int VerifLogin(String username, char[] password) {
+    /*public int VerifLogin(String username, char[] password) {
         int role;
 
         try {
@@ -224,13 +247,7 @@ public class LoginControl {
                         JOptionPane.showMessageDialog(null, "Votre compte a été banni.", "Erreur", JOptionPane.ERROR_MESSAGE);
                         return -1;
                     }
-                    /*else {
-                        // Mettre à jour lastTimeConnection dans la base de données
-                        //PreparedStatement updateLastTimeConnection = connection.prepareStatement(
-                               // "UPDATE users SET lastTimeConnection = CURRENT_TIMESTAMP WHERE username = ?");
-                        //updateLastTimeConnection.setString(1, username);
-                        //updateLastTimeConnection.executeUpdate();
-                    }*/
+
                     return role;
                 }
             }
@@ -239,7 +256,7 @@ public class LoginControl {
             e.printStackTrace();
             return -1;
         }
-    }
+    }*/
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 
@@ -253,7 +270,7 @@ public class LoginControl {
         return new String(hexChars);
     }
 
-    private boolean registerUser(String firstName, String lastName, String email, String username, char[] password, int role) {
+    private boolean registerUser(String firstName, String lastName, String email, String username, char[] password) {
 
         boolean success = false;
         Connection connection = null;
@@ -262,8 +279,14 @@ public class LoginControl {
             // Établir la connexion avec la base de données
             connection = DriverManager.getConnection(url, login, passwd);
 
+            boolean verif = VerifEmail(clientUser.getEmail());
+            if(!verif){
+                JOptionPane.showMessageDialog(null, "Adresse mail invalide");
+                return false;
+            }
+
             // Préparer la requête SQL pour insérer un nouvel utilisateur dans la table "users"
-            String query = "INSERT INTO users (first_name, last_name, email, username, password, role) VALUES (?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (first_name, last_name, email, username, password) VALUES (?, ?, ?, ?, ?)";
 
             // Hacher le mot de passe avec SHA-1
             MessageDigest digest = null;
@@ -281,7 +304,7 @@ public class LoginControl {
             statement.setString(3, email);
             statement.setString(4, username);
             statement.setString(5, hashedPasswordHex);
-            statement.setInt(6, role);
+            //statement.setInt(6, role);
             int rows = statement.executeUpdate();
 
             // Vérifier si l'insertion a réussi
@@ -308,9 +331,29 @@ public class LoginControl {
         return success;
     }
 
-    public void displayUserView(String cName) {
+    public void displayUserView(String cName) throws SQLException{
         ChatView chatView = new ChatView();
-        ChatControl chatControl = new ChatControl(chatView);
+        ChatControl chatControl = new ChatControl(chatView, clientUser);
+        UserDaoImpl.updateUserConnected(clientUser.getUsername());
         chatControl.initializeChatView(cName);
+        chatControl.afficher();
+        UserDaoImpl.updateDeconnected(clientUser.getUsername());
     }
+
+    public boolean containsAtSymbol(String str) {
+        return str.contains("@");
+    }
+
+    public boolean VerifEmail(String email){
+        boolean verif;
+        if (containsAtSymbol(email)) {
+            verif = true;
+        }
+        else {
+            verif = false;
+        }
+        return verif;
+    }
+
+
 }

@@ -47,7 +47,7 @@ public class LoginView extends JFrame {
 
     public LoginView() {
         //initialisation et création de la fenêtre
-        super("Chat.Oeuf");
+        super("Model.Chat.Oeuf");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(WINDOW_W, WINDOW_H);
         this.setLocationRelativeTo(null);
@@ -312,7 +312,6 @@ public class LoginView extends JFrame {
         this.setVisible(true);
 
     }
-
 
     public void setFieldWithText(JTextField textField, JLabel text){
         textField.setBackground(new Color(0, 0, 0, 0));

@@ -1,3 +1,5 @@
+package Model;
+
 import Model.Client;
 import Model.Message;
 

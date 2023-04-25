@@ -27,7 +27,7 @@ public class fenetre extends JFrame {
     private final String login = "pgloulou";
     private final String  passwd = "Malouise17";
 
-    public fenetre() {
+    /*public fenetre() {
         super("Application Messagerie");
 
         // Définit la taille de la fenêtre
@@ -77,7 +77,7 @@ public class fenetre extends JFrame {
                 int result = JOptionPane.showConfirmDialog(null, formPanel, "Login",
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
                 if (result == JOptionPane.OK_OPTION) { // TODO: Action lorsque j'appuie sur mon bouton login
-                    /*String username = usernameField.getText();
+                    String username = usernameField.getText();
                     char[] password = passwordField.getPassword();
                     int userRole = isValidUser(username, password); // TODO: Dans cette fonction on vérifie que l'utilisateur existe
                     if (userRole != -1) {
@@ -88,7 +88,7 @@ public class fenetre extends JFrame {
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Nom d'utilisateur ou mot de passe invalide.");  // TODO: Créer une fenetre d'alerte lorsque l'utilisateur n'existe pas
-                    }*/
+                    }
                 }
             }
         });
@@ -161,7 +161,7 @@ public class fenetre extends JFrame {
 
         // Ferme l'application lorsqu'on clique sur la croix rouge
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+    }*/
     ///CHANGER LES VALEURS PAR DEFAUT PAR LES VALEURS DU REGISTER
     private boolean banUser(String username) {
         try {
@@ -176,7 +176,7 @@ public class fenetre extends JFrame {
         }
         return false;
     }
-    private int getUserRole(String username) {
+    /*private int getUserRole(String username) {
         int role = 0;
         try {
             Connection connection = DriverManager.getConnection(url, login, passwd);
@@ -191,8 +191,9 @@ public class fenetre extends JFrame {
             e.printStackTrace();
         }
         return role;
-    }//
-    private int isValidUser(String username, char[] password) {
+    }*/
+
+    /*private int isValidUser(String username, char[] password) {
         int role = -1;
         try {
             // Récupérer le mot de passe haché de l'utilisateur à partir de la base de données
@@ -218,13 +219,7 @@ public class fenetre extends JFrame {
                         JOptionPane.showMessageDialog(null, "Votre compte a été banni.", "Erreur", JOptionPane.ERROR_MESSAGE);
                         return -1;
                     }
-                    /*else {
-                        // Mettre à jour lastTimeConnection dans la base de données
-                        //PreparedStatement updateLastTimeConnection = connection.prepareStatement(
-                               // "UPDATE users SET lastTimeConnection = CURRENT_TIMESTAMP WHERE username = ?");
-                        //updateLastTimeConnection.setString(1, username);
-                        //updateLastTimeConnection.executeUpdate();
-                    }*/
+
                     return role;
                 }
             }
@@ -233,8 +228,8 @@ public class fenetre extends JFrame {
             e.printStackTrace();
             return -1;
         }
-    }
-    private void showAdminModeratorWindow() {
+    }*/
+    /*private void showAdminModeratorWindow() {
         JFrame adminModeratorWindow = new JFrame("Gestion des utilisateurs");
         adminModeratorWindow.setSize(800, 600);
         adminModeratorWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -292,8 +287,8 @@ public class fenetre extends JFrame {
         usersTable.getColumn("Bannir").setCellEditor(buttonEditor);
 
         adminModeratorWindow.setVisible(true);
-    }
-    private boolean toggleBanUser(int userId, boolean isBanned) {
+    }*/
+    /*private boolean toggleBanUser(int userId, boolean isBanned) {
         try {
             Connection connection = DriverManager.getConnection(url, login, passwd);
             String updateQuery = "UPDATE users SET banned = ? WHERE id = ?";
@@ -307,10 +302,10 @@ public class fenetre extends JFrame {
             ex.printStackTrace();
             return false;
         }
-    }
+    }*/
 
 
-    private Object[][] getUsersData() {
+    /*private Object[][] getUsersData() {
         Object[][] data = null;
 
         try {
@@ -334,7 +329,7 @@ public class fenetre extends JFrame {
         }
 
         return data;
-    }
+    }*/
 
 
 
@@ -342,7 +337,7 @@ public class fenetre extends JFrame {
 
 
 
-    private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    /*private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for (int i = 0; i < bytes.length; i++) {
@@ -351,7 +346,7 @@ public class fenetre extends JFrame {
             hexChars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
-    }
+    }*/
 
 
     private void displayUserInformation(String username) {
@@ -500,7 +495,7 @@ public class fenetre extends JFrame {
     }
 
 
-    private boolean registerUser(String firstName, String lastName, String email, String username, char[] password, int role) {
+    /*private boolean registerUser(String firstName, String lastName, String email, String username, char[] password, int role) {
 
         boolean success = false;
         Connection connection = null;
@@ -553,7 +548,7 @@ public class fenetre extends JFrame {
             }
         }
         return success;
-    }
+    }*/
 
 
 }

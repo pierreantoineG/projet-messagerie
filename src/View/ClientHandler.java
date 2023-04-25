@@ -48,7 +48,7 @@
 //        contentPane = new JPanel() {
 //            public void paintComponent(Graphics g) {
 //                super.paintComponent(g);
-//                //Chat
+//                //Model.Chat
 //                g.setColor(Color.WHITE);
 //                g.fillRoundRect(250,170, 320, 45, 30, 30);
 //                g.setColor(Color.WHITE);
@@ -70,7 +70,7 @@
 //        JLabel lbl_logo = new JLabel(new ImageIcon(logo_titre.getImage()));
 //
 //        //Texte 1
-//        JLabel lblChatAs = new JLabel("Chat as :");
+//        JLabel lblChatAs = new JLabel("Model.Chat as :");
 //        lblChatAs.setFont(urbanist.deriveFont(Font.BOLD, 18));
 //        lblChatAs.setHorizontalAlignment(SwingConstants.CENTER);
 //

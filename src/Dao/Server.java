@@ -1,3 +1,5 @@
+package Dao;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,7 +19,7 @@ public class Server extends JFrame implements Runnable{
     private static String  passwd = "Malouise17";
     private ServerSocket serverSocket;
 
-    //private UserDao userDao;
+    //private Dao.UserDao userDao;
 
     private JPanel contentPane;
     private JTextField port;
@@ -58,7 +60,7 @@ public class Server extends JFrame implements Runnable{
         contentPane = new JPanel() {
             public void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                //Chat
+                //Model.Chat
                 g.setColor(Color.WHITE);
                 g.fillRoundRect(250, 270, 320, 45, 30, 30);
                 g.setColor(new Color(0, 245, 212));

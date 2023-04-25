@@ -1,5 +1,6 @@
 package Controller;
 
+import Dao.UserDaoImpl;
 import Model.*;
 import View.ChatView;
 
@@ -13,18 +14,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ChatControl extends IOException {
     private ChatView chatView;
 
-//    private Client clientUser;
+    private Client clientUser;
     private Message message;
     private static Socket client;
     private static PrintWriter out;
     private static BufferedReader in;
-    private static String addIp = "192.168.1.40";
+    private static String addIp = "localhost";
     private static int numPort = 1000;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
@@ -39,8 +41,9 @@ public class ChatControl extends IOException {
         }
     }
 
-    public ChatControl(ChatView chatView){
+    public ChatControl(ChatView chatView, Client client){
         this.chatView = chatView;
+        clientUser = client;
     }
 
     public void initializeChatView(String cName){
@@ -66,88 +69,104 @@ public class ChatControl extends IOException {
                 button_send.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
             }
         });
+
         JButton button_chat = chatView.getButton_chat();
+        UseMouse1(button_chat);
         button_chat.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
+                //Rien
+            }
+            public void mouseEntered(MouseEvent e) {
+                button_chat.setForeground(Color.WHITE);
             }
 
-            /*public void mouseEntered(MouseEvent e) {
-                //g.setColor(new Color(0, 245, 212));
-                //g.fillRoundRect(5, 100, 140, 50, 30, 30);
-                button_chat.setBackground(new Color(0, 245, 212));
-                button_chat.setOpaque(true);
-                button_chat.setBorder(null); // Changer la couleur de fond du bouton en rouge
-            }*/
-
             public void mouseExited(MouseEvent e) {
-                button_chat.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
+                button_chat.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
             }
         });
 
         JButton button_users = chatView.getButton_users();
-        button_users.addMouseListener(new MouseAdapter() {
+        UseMouse(button_users);
+        button_users.addActionListener(new ActionListener() {
             @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
+            public void actionPerformed(ActionEvent e) {
+                //Afficher view1 si User
+                //Afficher view2 si Moderator
+                //Afficher view3 si Admin
             }
+        });
 
+        button_users.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                button_users.setBackground(new Color(0, 245, 212));
-                button_users.setOpaque(true);
-                button_users.setBorder(null);
-                button_users.setContentAreaFilled(false);
-
+                button_users.setForeground(Color.WHITE);
             }
 
             public void mouseExited(MouseEvent e) {
-                button_users.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
-                button_users.setOpaque(true);
-                button_users.setBorder(null);
-                button_users.setContentAreaFilled(false);
+                button_users.setForeground(Color.BLACK);
             }
         });
 
         JButton button_settings = chatView.getButton_settings();
-        button_settings.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
-            }
+        UseMouse(button_settings);
+        // TODO: CHANGER CA
+        /*button_settings.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fenetreSettings f1 = null;
+                try {
+                    f1 = new fenetreSettings();
+                } catch (IOException | FontFormatException | SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                dispose();
+                f1.setVisible(true);
+            }
+        });*/
+        button_settings.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                button_settings.setBackground(new Color(0, 245, 212));
-                button_settings.setOpaque(true);
-                button_settings.setBorder(null); // Changer la couleur de fond du bouton en rouge
+                button_settings.setForeground(Color.WHITE);
             }
 
             public void mouseExited(MouseEvent e) {
-                button_settings.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
+                button_settings.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
             }
         });
 
         JButton button_logout = chatView.getButton_logout();
+        UseMouse(button_logout);
         button_logout.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
+                //Remettre page log in
             }
 
             public void mouseEntered(MouseEvent e) {
-                button_logout.setBackground(new Color(0, 245, 212));
-                button_logout.setOpaque(true);
-                button_logout.setBorder(null); // Changer la couleur de fond du bouton en rouge
+                button_logout.setForeground(Color.WHITE);
             }
 
             public void mouseExited(MouseEvent e) {
-                button_logout.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
+                button_logout.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
             }
         });
+
+        JButton button_reporting = chatView.getButton_reporting();
+        button_reporting.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //Afficher report
+            }
+
+            public void mouseEntered(MouseEvent e) {
+                button_reporting.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                button_reporting.setForeground(Color.BLACK);
+            }
+        });
+
         chatView.setVisible(true);
 
         startClient();
@@ -257,5 +276,52 @@ public class ChatControl extends IOException {
 
 
         return messagePanel;
+    }
+
+    public void UseMouse(JButton button){
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //Afficher page chat
+                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
+            }
+
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(new Color(0, 245, 212));
+                button.setOpaque(true);
+                button.setBorder(null); // Changer la couleur de fond du bouton en rouge
+            }
+
+
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
+            }
+        });
+    }
+
+    public void UseMouse1(JButton button) {
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //Afficher page chat
+                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
+            }
+
+            /*public void mouseEntered(MouseEvent e) {
+                //g.setColor(new Color(0, 245, 212));
+                //g.fillRoundRect(5, 100, 140, 50, 30, 30);
+                button_chat.setBackground(new Color(0, 245, 212));
+                button_chat.setOpaque(true);
+                button_chat.setBorder(null); // Changer la couleur de fond du bouton en rouge
+            }*/
+
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
+            }
+        });
+    }
+
+    public void afficher() throws SQLException {
+        chatView.displayUserInfo(UserDaoImpl.getFirstName(clientUser.getUsername()), UserDaoImpl.getLastName(clientUser.getUsername()), clientUser.getUsername(), String.valueOf(UserDaoImpl.getLastTimeConnection(clientUser.getUsername())), String.valueOf(UserDaoImpl.countUserMessages(clientUser.getUsername())), String.valueOf(UserDaoImpl.getRole(clientUser.getUsername())));
     }
 }

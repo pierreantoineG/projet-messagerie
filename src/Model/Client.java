@@ -27,7 +27,7 @@ public class Client extends JFrame {
     private StateUser state;//absent connecté deconnecté
     enum TypeUser {NORMAL, MODERATOR, ADMINISTRATOR;}
     private int typeUser; // Admin Moderateur Normal
-    private LocalDateTime last_connection_time;
+    private Date last_connection_time;
 
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
@@ -49,9 +49,7 @@ public class Client extends JFrame {
 //        this.password = password;
 //    }
 
-    public Client(){
-
-    }
+    public Client(){}
 
 
     public Integer getId() { return id; }
@@ -68,7 +66,11 @@ public class Client extends JFrame {
 
     public int getTypeUser() { return typeUser;}
 
-    public void setId(Integer id) {
+    public Date getLast_connection_time(){
+        return getLast_connection_time();
+    }
+
+    public void setRole(Integer id) {
         this.id = id;
     }
 
