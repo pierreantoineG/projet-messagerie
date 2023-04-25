@@ -9,8 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import java.awt.*;
 import java.sql.*;
@@ -22,6 +21,125 @@ public class UserDaoImpl implements UserDao {
     private static String url = "jdbc:sqlserver://projetmessagerie.database.windows.net:1433;database=projet_messagerie;user=pgloulou@projetmessagerie;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;";
     private static String login = "pgloulou";
     private static String passwd = "Malouise17";
+
+    public static Map<String, Integer> countMessagesSentByUser() {
+        Map<String, Integer> messageCountByUser = new HashMap<>();
+        String query = "SELECT u.username, COUNT(m.id) AS nb_messages_envoyes " +
+                "FROM users u " +
+                "LEFT JOIN MESSAGE m ON u.id = m.USER_ID " +
+                "GROUP BY u.id, u.username";
+        try (Connection con = DriverManager.getConnection(url, login, passwd);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+            while (rs.next()) {
+                String username = rs.getString("username");
+                int messageCount = rs.getInt("nb_messages_envoyes");
+                messageCountByUser.put(username, messageCount);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return messageCountByUser;
+    }
+    public static int countDeconnectedUsers() {
+        int count = 0;
+        String query = "SELECT COUNT(*) AS count FROM users WHERE state = 'deconnected'";
+        try (Connection con = DriverManager.getConnection(url, login, passwd);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+    public static int countAwaydUsers() {
+        int count = 0;
+        String query = "SELECT COUNT(*) AS count FROM users WHERE state = 'away'";
+        try (Connection con = DriverManager.getConnection(url, login, passwd);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+    public static int countUsersWithRoleAdmin() {
+        int count = 0;
+        String query = "SELECT COUNT(*) AS count FROM users WHERE role = 1";
+        try (Connection con = DriverManager.getConnection(url, login, passwd);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+    public static int countUsersWithRoleModerateur() {
+        int count = 0;
+        String query = "SELECT COUNT(*) AS count FROM users WHERE role = 2";
+        try (Connection con = DriverManager.getConnection(url, login, passwd);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+    public static int countUsersWithRoleUser() {
+        int count = 0;
+        String query = "SELECT COUNT(*) AS count FROM users WHERE role = 3";
+        try (Connection con = DriverManager.getConnection(url, login, passwd);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+    public static int countBanned() {
+        int count = 0;
+        String query = "SELECT COUNT(*) AS count FROM users WHERE banned = 1";
+        try (Connection con = DriverManager.getConnection(url, login, passwd);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+    }
+    public static int countNoBanned() {
+        int count = 0;
+        String query = "SELECT COUNT(*) AS count FROM users WHERE banned = 0";
+        try (Connection con = DriverManager.getConnection(url, login, passwd);
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return count;
+
+    }
 
 
     public static void updateDeconnected(String username) throws SQLException {
