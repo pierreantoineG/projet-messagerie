@@ -15,7 +15,7 @@ public class Main {
         LoginView loginView = new LoginView();
         LoginControl loginControl = new LoginControl(loginView);
         loginControl.initialize();
-        //ReportView reportView = new ReportView();
+        //Model.ReportView reportView = new Model.ReportView();
         //fenetre fenetre = new fenetre();
         /*
         // Créer un JPanel

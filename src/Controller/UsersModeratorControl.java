@@ -1,4 +1,4 @@
-package Controller;
+/*package Controller;
 
 import Model.Client;
 import View.UsersAdminView;
@@ -124,6 +124,6 @@ public class UsersModeratorControl {
         usersModeratorView.setVisible(true);
     }
 }
-
+*/
 
 

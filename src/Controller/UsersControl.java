@@ -1,4 +1,6 @@
+/*
 package Controller;
+
 
 import Model.Client;
 import View.ChatView;
@@ -129,6 +131,6 @@ public class UsersControl {
         usersView.setVisible(true);
     }
 }
-
+ */
 
 

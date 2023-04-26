@@ -1,3 +1,5 @@
+package Model;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -24,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import Dao.*;
 
-public class ReportView {
+public class ReportView extends JFrame{
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
 
@@ -37,8 +39,9 @@ public class ReportView {
     }
     public ReportView() {
 
-
-
+        setSize(1400, 1000);
+        setBackground(Color.WHITE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Création des données pour le premier graphique (camembert)
         // DATA SUR LE  ROLE DES USERS
@@ -211,15 +214,9 @@ public class ReportView {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         chartsPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Création de la fenêtre principale et ajout du conteneur des graphiques
-        JFrame mainFrame = new JFrame("Information graphique");
-        Container contentPane = mainFrame.getContentPane();
-        contentPane.add(chartsPanel);
-        mainFrame.setPreferredSize(new Dimension(1400, 1000));
-        mainFrame.setBackground(new Color(250,250,250));
-        mainFrame.pack();
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setVisible(true);
+        add(chartsPanel);
+        revalidate();
+        repaint();
 
     };
 

@@ -23,7 +23,7 @@ public class ChatView extends JFrame {
     private JButton button_chat = new JButton("Chat");
     private JButton button_send = new JButton("");
     private JButton button_users = new JButton("Users");
-    private JButton button_settings = new JButton("Controller.Settings");
+    private JButton button_settings = new JButton("Settings");
     private JButton button_logout = new JButton("Logout");
     private JButton button_reporting = new JButton("Reporting");
     private JLabel lbl_first_name;

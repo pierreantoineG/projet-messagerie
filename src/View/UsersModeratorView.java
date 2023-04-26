@@ -1,7 +1,10 @@
 package View;
 
-import Dao.UserDaoImpl;
-
+import Controller.ChatControl;
+import Controller.LoginControl;
+import Model.*;
+import Controller.Settings;
+import Dao.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -13,14 +16,12 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class UsersModeratorView  extends JFrame {
-
+public class UsersModeratorView extends JFrame{
     private static boolean isBan = false;
     private static boolean isUban = false;
-    private static boolean isAdmin = false;
-    private static boolean isModo = false;
-    private static boolean isUser = false;
+    private Client clientUser;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
+
     static Font urbanist;
 
     static {
@@ -30,42 +31,206 @@ public class UsersModeratorView  extends JFrame {
             throw new RuntimeException(e);
         }
     }
-
-    private JButton button_chat = new JButton("Chat");
-    private JButton button_users = new JButton("Users");
-    private JButton button_settings = new JButton("Settings");
-    private JButton button_logout = new JButton("Log out");
-    private JButton button_reporting = new JButton("Reporting");
-
-    public JButton getButton_chat() {
-        return button_chat;
-    }
-
-    public JButton getButton_users() {
-        return button_users;
-    }
-
-    public JButton getButton_settings() {
-        return button_settings;
-    }
-
-    public JButton getButton_logout() {
-        return button_logout;
-    }
-    public JButton getButton_reporting(){
-        return button_reporting;
-    }
-    public Font getUrbanist(){
-        return urbanist;
-    }
+    private ChatView chatView;
 
     public UsersModeratorView() throws IOException, FontFormatException, SQLException {
 
-        //Création de la fenêtre
         setSize(1000, 680);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setVisible(true);
+
+        //Image logo
+        ImageIcon logo = new ImageIcon("Icons/LogoChatOeuf.png");
+        JLabel lbl_logo = new JLabel(new ImageIcon(logo.getImage()));
+
+        //Image icon chat
+        ImageIcon img_icon_chat = new ImageIcon("Icons/icon_chat_conv.png");
+        JLabel lbl_icon_chat = new JLabel(new ImageIcon(img_icon_chat.getImage()));
+
+        //Image icon users
+        ImageIcon img_icon_users = new ImageIcon("Icons/icon_users.png");
+        JLabel lbl_icon_users = new JLabel(new ImageIcon(img_icon_users.getImage()));
+
+        //Image icon settings
+        ImageIcon img_icon_settings = new ImageIcon("Icons/icon_settings.png");
+        JLabel lbl_icon_settings = new JLabel(new ImageIcon(img_icon_settings.getImage()));
+
+        //Image icon log out
+        ImageIcon img_icon_logout = new ImageIcon("Icons/icon_logout.png");
+        JLabel lbl_icon_logout = new JLabel(new ImageIcon(img_icon_logout.getImage()));
+
+        //Image icon reporting
+        ImageIcon img_icon_reporting = new ImageIcon("Icons/icon_reporting.png");
+        JLabel lbl_icon_reporting = new JLabel(new ImageIcon(img_icon_reporting.getImage()));
+
+        //Texte 1
+        JLabel lbl_user_community = new JLabel("User community");
+        lbl_user_community.setFont(urbanist.deriveFont(Font.BOLD, 30));
+        lbl_user_community.setHorizontalAlignment(SwingConstants.CENTER);
+
+        //Texte 2
+        JLabel lbl_admin = new JLabel("Administrator ");
+        lbl_admin.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        lbl_admin.setHorizontalAlignment(SwingConstants.CENTER);
+
+        //Texte 3
+        JLabel lbl_moderator = new JLabel("Moderator ");
+        lbl_moderator.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        lbl_moderator.setHorizontalAlignment(SwingConstants.CENTER);
+
+        //Texte 4
+        JLabel lbl_nb_users = new JLabel("Number of users ");
+        lbl_nb_users.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        lbl_nb_users.setHorizontalAlignment(SwingConstants.CENTER);
+
+        //Texte 5
+        JLabel lbl_nb_registered = new JLabel(); //creer variable qui recupere nb de users enregistres sur la bdd
+        lbl_nb_registered.setFont(urbanist.deriveFont(Font.BOLD, 38));
+        lbl_nb_registered.setForeground(new Color(0, 245, 212));
+        lbl_nb_registered.setHorizontalAlignment(SwingConstants.CENTER);
+        lbl_nb_registered.setBorder(null);
+        lbl_nb_registered.setOpaque(false);
+        lbl_nb_registered.setBackground(new Color(0, 0, 0, 0));
+        try {
+            lbl_nb_registered.setText(UserDaoImpl.countUsers() + " registered");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        JTextArea chatArea = new JTextArea();
+        chatArea.setEditable(false);
+        chatArea.setBackground(Color.WHITE);
+        //Scroll Pane
+        /*JScrollPane scrollPane_chat = new JScrollPane(chatArea);
+        scrollPane_chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane_chat.setPreferredSize(new Dimension(510, 540));
+        scrollPane_chat.setBorder(null);*/
+
+        //Boutons
+        //Bouton chat
+        JButton button_chat = new JButton("Chat");
+        button_chat.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_chat.setBackground(new Color(0, 0, 0, 0));
+        button_chat.setBorder(null);
+        button_chat.setContentAreaFilled(false);
+        button_chat.setOpaque(false);
+        button_chat.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                ChatView chatView = null;
+                try {
+                    chatView = new ChatView();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                ChatControl chatControl = new ChatControl(chatView, clientUser);
+                chatControl.initializeChatView(clientUser.getUsername());
+            }
+            public void mouseEntered(MouseEvent e) {
+                button_chat.setForeground(Color.WHITE);
+            }
+            public void mouseExited(MouseEvent e) {
+                button_chat.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
+            }
+        });
+
+        //Bouton users
+        JButton button_users = new JButton("Users");
+        button_users.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_users.setOpaque(false);
+        button_users.setContentAreaFilled(false);
+        button_users.setBackground(new Color(0, 0, 0, 0));
+        button_users.setBorder(null);
+
+        button_users.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                button_users.setForeground(Color.WHITE);
+            }
+            public void mouseExited(MouseEvent e) {
+                button_users.setForeground(Color.BLACK);
+            }
+        });
+
+        //Bouton settings
+        JButton button_settings = new JButton("Settings");
+        button_settings.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_settings.setBackground(new Color(0, 0, 0, 0));
+        button_settings.setBorder(null);
+        button_settings.setOpaque(false);
+        button_settings.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Settings f1 = null;
+                try {
+                    f1 = new Settings(clientUser);
+                } catch (IOException | FontFormatException | SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                f1.setVisible(true);
+            }
+        });
+        button_settings.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                button_settings.setForeground(Color.WHITE);
+            }
+
+            public void mouseExited(MouseEvent e) {
+                button_settings.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
+            }
+        });
+
+        //Bouton log out
+        JButton button_logout = new JButton("Log out");
+        button_logout.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_logout.setBackground(new Color(0, 0, 0, 0));
+        button_logout.setBorder(null);
+        button_logout.setOpaque(false);
+        button_logout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chatView.setVisible(false);
+                LoginControl loginControl = new LoginControl(new LoginView());
+                loginControl.initialize();
+            }
+        });
+        button_logout.addMouseListener(new MouseAdapter() {
+            public void mouseEntered(MouseEvent e) {
+                button_logout.setForeground(Color.WHITE);
+            }
+            public void mouseExited(MouseEvent e) {
+                button_logout.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
+            }
+        });
+
+        //Bouton reporting
+        JButton button_reporting = new JButton("Reporting");
+        button_reporting.setFont(urbanist.deriveFont(Font.BOLD, 19));
+        button_reporting.setBackground(new Color(0, 0, 0, 0));
+        button_reporting.setBorder(null);
+        button_reporting.setOpaque(false);
+        button_reporting.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                    if(UserDaoImpl.getRole(clientUser.getUsername()).equals("Administrator")){
+                        ReportView reportView = null;
+                        reportView = new ReportView();
+                        reportView.setVisible(true);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "NOT ALLOWED BECAUSE YOU ARE NOT AN ADMINISTRATOR ...");
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            public void mouseEntered(MouseEvent e) {
+                button_reporting.setForeground(Color.WHITE);
+            }
+            public void mouseExited(MouseEvent e) {
+                button_reporting.setForeground(Color.BLACK);
+            }
+        });
 
         String[] moderatorUsers;
         String[] administratorUsers;
@@ -104,6 +269,7 @@ public class UsersModeratorView  extends JFrame {
 
         JPanel panel_grid4 = new JPanel(new GridLayout(userInfo.length, 1));
         panel_grid4.setOpaque(false);
+
 
         JPanel panel_chat = new JPanel() {
             public void paintComponent(Graphics g) {
@@ -150,7 +316,6 @@ public class UsersModeratorView  extends JFrame {
                     username1.setEditable(false);
 
                     if (banned == 0) {
-                        String currentUser = username;
                         JButton ban = new JButton("Ban");
                         ban.setFont(urbanist.deriveFont(Font.BOLD, 14));
                         ban.setBackground(new Color(0, 0, 0, 0));
@@ -158,21 +323,24 @@ public class UsersModeratorView  extends JFrame {
                         ban.setBorder(null);
                         ban.setOpaque(false);
                         ban.setBorder(new EmptyBorder(0, 0, 38, 0));
-                        ban.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                isBan = true;
-                                try {
-                                    UserDaoImpl.banUser(currentUser, true);
-                                } catch (SQLException ex) {
-                                    throw new RuntimeException(ex);
+                        for (String banUser : unbannedUsers) {
+                            ban.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    isBan = true;
+                                    try {
+                                        UserDaoImpl.banUser(banUser, true);
+                                        System.out.println(banUser);
+                                    } catch (SQLException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
+                                    //;
                                 }
-                                //;
-                            }
-
-                        });
+                            });
+                        }
                         panel_grid4.add(ban);
-                    } else {
+                    }
+                    else {
                         JButton unbanned = new JButton("Unban");
                         //ban.setActionCommand("a");
                         unbanned.setFont(urbanist.deriveFont(Font.BOLD, 14));
@@ -181,19 +349,21 @@ public class UsersModeratorView  extends JFrame {
                         unbanned.setBorder(null);
                         unbanned.setOpaque(false);
                         unbanned.setBorder(new EmptyBorder(0, 0, 38, 0));
-                        String currentUser = username;
-                        unbanned.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                unbanned.setText("Ban");
-                                try {
-                                    UserDaoImpl.UnbanUser(currentUser, true);
-                                } catch (SQLException ex) {
-                                    throw new RuntimeException(ex);
+                        for (String unbannedUser : bannedUsers) {
+                            unbanned.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    isUban = true;
+                                    try {
+                                        UserDaoImpl.UnbanUser(unbannedUser, true);
+                                        System.out.println(unbannedUser);
+                                    } catch (SQLException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
+                                    //unbanned.setText("Ban");
                                 }
-                            }
-                        });
-
+                            });
+                        }
                         panel_grid4.add(unbanned);
                     }
                     //Image ban
@@ -212,7 +382,7 @@ public class UsersModeratorView  extends JFrame {
                     y_ban += 55;
 
                     g.setColor(color);
-                    g.fillOval(x1, y1, 10, 10);
+                    g.fillOval(x1,y1,10,10);
                     y1 += 55;
                 }
 
@@ -300,103 +470,6 @@ public class UsersModeratorView  extends JFrame {
 
             }
         };
-
-        //Image logo
-        ImageIcon logo = new ImageIcon("Icons/LogoChatOeuf.png");
-        JLabel lbl_logo = new JLabel(new ImageIcon(logo.getImage()));
-
-        //Image icon chat
-        ImageIcon img_icon_chat = new ImageIcon("Icons/icon_chat_conv.png");
-        JLabel lbl_icon_chat = new JLabel(new ImageIcon(img_icon_chat.getImage()));
-
-        //Image icon users
-        ImageIcon img_icon_users = new ImageIcon("Icons/icon_users.png");
-        JLabel lbl_icon_users = new JLabel(new ImageIcon(img_icon_users.getImage()));
-
-        //Image icon settings
-        ImageIcon img_icon_settings = new ImageIcon("Icons/icon_settings.png");
-        JLabel lbl_icon_settings = new JLabel(new ImageIcon(img_icon_settings.getImage()));
-
-        //Image icon log out
-        ImageIcon img_icon_logout = new ImageIcon("Icons/icon_logout.png");
-        JLabel lbl_icon_logout = new JLabel(new ImageIcon(img_icon_logout.getImage()));
-
-        //Image icon reporting
-        ImageIcon img_icon_reporting = new ImageIcon("Icons/icon_reporting.png");
-        JLabel lbl_icon_reporting = new JLabel(new ImageIcon(img_icon_reporting.getImage()));
-
-        //Texte 1
-        JLabel lbl_user_community = new JLabel("User community");
-        lbl_user_community.setFont(urbanist.deriveFont(Font.BOLD, 30));
-        lbl_user_community.setHorizontalAlignment(SwingConstants.CENTER);
-
-        //Texte 2
-        JLabel lbl_admin = new JLabel("Administrator ");
-        lbl_admin.setFont(urbanist.deriveFont(Font.BOLD, 20));
-        lbl_admin.setHorizontalAlignment(SwingConstants.CENTER);
-
-        //Texte 3
-        JLabel lbl_moderator = new JLabel("Moderator ");
-        lbl_moderator.setFont(urbanist.deriveFont(Font.BOLD, 20));
-        lbl_moderator.setHorizontalAlignment(SwingConstants.CENTER);
-
-        //Texte 4
-        JLabel lbl_nb_users = new JLabel("Number of users ");
-        lbl_nb_users.setFont(urbanist.deriveFont(Font.BOLD, 20));
-        lbl_nb_users.setHorizontalAlignment(SwingConstants.CENTER);
-
-        //Texte 5
-        JLabel lbl_nb_registered = new JLabel(); //creer variable qui recupere nb de users enregistres sur la bdd
-        lbl_nb_registered.setFont(urbanist.deriveFont(Font.BOLD, 38));
-        lbl_nb_registered.setForeground(new Color(0, 245, 212));
-        lbl_nb_registered.setHorizontalAlignment(SwingConstants.CENTER);
-        lbl_nb_registered.setBorder(null);
-        lbl_nb_registered.setOpaque(false);
-        lbl_nb_registered.setBackground(new Color(0, 0, 0, 0));
-        lbl_nb_registered.setText(UserDaoImpl.countUsers() + " registered");
-
-        JTextArea chatArea = new JTextArea();
-        chatArea.setEditable(false);
-        chatArea.setBackground(Color.WHITE);
-        //Scroll Pane
-        JScrollPane scrollPane_chat = new JScrollPane(chatArea);
-        scrollPane_chat.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane_chat.setPreferredSize(new Dimension(510, 540));
-        scrollPane_chat.setBorder(null);
-
-        //Boutons
-        //Bouton chat
-        button_chat.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_chat.setBackground(new Color(0, 0, 0, 0));
-        button_chat.setBorder(null);
-        button_chat.setContentAreaFilled(false);
-        button_chat.setOpaque(false);
-
-        //Bouton users
-        button_users.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_users.setOpaque(false);
-        button_users.setContentAreaFilled(false);
-        button_users.setBackground(new Color(0, 0, 0, 0));
-        button_users.setBorder(null);
-
-        //Bouton settings
-        button_settings.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_settings.setBackground(new Color(0, 0, 0, 0));
-        button_settings.setBorder(null);
-        button_settings.setOpaque(false);
-
-        //Bouton log out
-        button_logout.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_logout.setBackground(new Color(0, 0, 0, 0));
-        button_logout.setBorder(null);
-        button_logout.setOpaque(false);
-
-        //Bouton reporting
-        button_reporting.setFont(urbanist.deriveFont(Font.BOLD, 19));
-        button_reporting.setBackground(new Color(0, 0, 0, 0));
-        button_reporting.setBorder(null);
-        button_reporting.setOpaque(false);
-
         panel_chat.setBackground(new Color(0, 187, 249));
         panel_chat.setLayout(new SpringLayout());
 
@@ -428,7 +501,7 @@ public class UsersModeratorView  extends JFrame {
         //panel_chat.setComponentZOrder(panel_grid3, 0);
         panel_chat.setComponentZOrder(panel_grid2, 0);
 
-        // Défini les contraintes pour chaque composant pour le contentPanel uniquement
+        //TODO Définir les contraintes pour chaque composant pour le contentPanel uniquement
         SpringLayout contentLayout = (SpringLayout) panel_chat.getLayout();
 
         contentLayout.putConstraint(SpringLayout.NORTH, lbl_logo, 40, SpringLayout.NORTH, panel_chat);
@@ -501,7 +574,6 @@ public class UsersModeratorView  extends JFrame {
 
         add(panel_chat);
         revalidate();
-
     }
 
     /*private boolean toggleBanUser(int userId, boolean isBanned) {
@@ -520,7 +592,4 @@ public class UsersModeratorView  extends JFrame {
         }
     }*/
 }
-
-
-
 

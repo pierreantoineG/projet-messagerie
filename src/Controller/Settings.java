@@ -434,7 +434,7 @@ public class Settings extends JFrame {
         });
 
         //Bouton settings
-        JButton button_settings = new JButton("Controller.Settings");
+        JButton button_settings = new JButton("Settings");
         button_settings.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_settings.setBackground(new Color(0, 0, 0, 0));
         button_settings.setBorder(null);
@@ -485,7 +485,18 @@ public class Settings extends JFrame {
         button_reporting.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Afficher report
+                try {
+                    if(UserDaoImpl.getRole(clientUser.getUsername()).equals("Administrator")){
+                        ReportView reportView = null;
+                        reportView = new ReportView();
+                        reportView.setVisible(true);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "NOT ALLOWED BECAUSE YOU ARE NOT AN ADMINISTRATOR ...");
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             public void mouseEntered(MouseEvent e) {

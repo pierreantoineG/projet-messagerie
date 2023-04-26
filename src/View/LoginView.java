@@ -6,6 +6,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 
@@ -40,6 +42,17 @@ public class LoginView extends JFrame {
 //    private String mdp = Arrays.toString(passwordField.getPassword());
     private boolean stateSignUp = false;
 
+    static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
+    static Font urbanist;
+
+    static {
+        try {
+            urbanist = Font.createFont(Font.TRUETYPE_FONT, font);
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public static final int WINDOW_H = 650;
     public static final int WINDOW_W = 600;
@@ -47,48 +60,11 @@ public class LoginView extends JFrame {
 
     public LoginView() {
         //initialisation et création de la fenêtre
-        super("Model.Chat.Oeuf");
+        super("Chat.Oeuf");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(WINDOW_W, WINDOW_H);
         this.setLocationRelativeTo(null);
         this.setBackground(new Color(0, 187, 249));
-
-
-        //initialisation des zones de textes pour le pseudo et le mdp (pas de fond ni de bordure)
-
-//        handleField.addMouseListener(new MouseAdapter() {
-//            public void mouseClicked(MouseEvent e) {
-//                handleField.requestFocus();
-//            }
-//        });
-
-//        handleField.getDocument().addDocumentListener(new DocumentListener() {
-//            @Override
-//            public void insertUpdate(DocumentEvent e) {
-//                updateText();
-//            }
-//
-//            @Override
-//            public void removeUpdate(DocumentEvent e) {
-//                updateText();
-//            }
-//
-//            @Override
-//            public void changedUpdate(DocumentEvent e) {
-//                updateText();
-//            }
-//
-//            private void updateText() {
-//                pseudo = handleField.getText(); // Mise à jour de la variable avec le nouveau contenu du champ de texte
-//            }
-//        });
-
-
-//        signUpButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                stateSignUp = signUpButton.isSelected();
-//            }
-//        });
 
         setButton(signUpButton, 20);
 
@@ -316,9 +292,9 @@ public class LoginView extends JFrame {
     public void setFieldWithText(JTextField textField, JLabel text){
         textField.setBackground(new Color(0, 0, 0, 0));
         textField.setBorder(null);
-        textField.setFont(new Font("Poppins", Font.PLAIN, 25));
+        textField.setFont(urbanist.deriveFont(Font.PLAIN, 25));
 
-        text.setFont(new Font("Poppins", Font.PLAIN, 25));
+        text.setFont(urbanist.deriveFont(Font.PLAIN, 25));
         text.setForeground(new Color(202, 214, 216));
     }
 
@@ -326,7 +302,7 @@ public class LoginView extends JFrame {
         button.setBackground(new Color(0, 0, 0, 0));
         button.setFocusPainted(false);
         button.setBorderPainted(false);
-        button.setFont(new Font("Poppins", Font.BOLD, policeSize));
+        button.setFont(urbanist.deriveFont(Font.BOLD, policeSize));
     }
 
 

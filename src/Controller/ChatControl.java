@@ -2,10 +2,7 @@ package Controller;
 
 import Dao.UserDaoImpl;
 import Model.*;
-import View.ChatView;
-import View.UsersModeratorView;
-import View.UsersView;
-
+import View.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,7 +19,7 @@ import java.util.Date;
 
 public class ChatControl extends IOException {
     private ChatView chatView;
-
+    private LoginView loginView;
     private Client clientUser;
     private Message message;
     private static Socket client;
@@ -55,14 +52,15 @@ public class ChatControl extends IOException {
             }
         });
 
+        //Bouton send
         JButton button_send = chatView.getButton_send();
         button_send.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 startWriting(cName);
             }
         });
-
         button_send.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
@@ -70,24 +68,13 @@ public class ChatControl extends IOException {
             }
         });
 
+        //Bouton chat
         JButton button_chat = chatView.getButton_chat();
         UseMouse1(button_chat);
-        button_chat.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Rien
-            }
-            public void mouseEntered(MouseEvent e) {
-                button_chat.setForeground(Color.WHITE);
-            }
 
-            public void mouseExited(MouseEvent e) {
-                button_chat.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
-            }
-        });
-
+        //Bouton user
         JButton button_users = chatView.getButton_users();
-        UseMouse(button_users);
+        UseMouse1(button_users);
         button_users.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -97,22 +84,26 @@ public class ChatControl extends IOException {
                         /*UsersView usersView = new UsersView();
                         UsersControl usersControl = new UsersControl(usersView, clientUser);
                         usersControl.initializeUsersView(clientUser.getUsername());*/
-                        FenetreUsersAdmin fenetreUsersAdmin = new FenetreUsersAdmin(clientUser);
-                        fenetreUsersAdmin.initialize();
+                        UsersAdminView usersAdminView = null;
+                        usersAdminView = new UsersAdminView();
+                        usersAdminView.setVisible(true);
+
                     }
                     else if(role.equals("Moderator")){
                         /*UsersModeratorView usersModeratorView = new UsersModeratorView();
                         UsersModeratorControl usersModeratorControl = new UsersModeratorControl(usersModeratorView, clientUser);
                         usersModeratorControl.initializeUsersView(clientUser.getUsername());*/
-                        FenetreUsersModerator fenetreUsersModerator = new FenetreUsersModerator(clientUser);
-                        fenetreUsersModerator.initialize();
+                        UsersModeratorView usersModeratorView = null;
+                        usersModeratorView = new UsersModeratorView();
+                        usersModeratorView.setVisible(true);
                     }
                     else if(role.equals("User")){
                         /*UsersView usersView = new UsersView();
                         UsersControl usersControl = new UsersControl(usersView, clientUser);
                         usersControl.initializeUsersView(clientUser.getUsername());*/
-                        FenetreUsers fenetreUsers = new FenetreUsers(clientUser);
-                        fenetreUsers.initialize();
+                        UsersView usersView = null;
+                        usersView = new UsersView();
+                        usersView.setVisible(true);
                     }
                 } catch (SQLException | IOException | FontFormatException ex) {
                     throw new RuntimeException(ex);
@@ -120,19 +111,9 @@ public class ChatControl extends IOException {
             }
         });
 
-        button_users.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                button_users.setForeground(Color.WHITE);
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button_users.setForeground(Color.BLACK);
-            }
-        });
-
+        //Bouton settings
         JButton button_settings = chatView.getButton_settings();
-        UseMouse(button_settings);
-        // TODO: CHANGER CA
+        UseMouse1(button_settings);
         button_settings.addActionListener(new ActionListener() {
 
             @Override
@@ -145,46 +126,37 @@ public class ChatControl extends IOException {
                 }
             }
         });
-        button_settings.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                button_settings.setForeground(Color.WHITE);
-            }
 
-            public void mouseExited(MouseEvent e) {
-                button_settings.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
-            }
-        });
-
+        //Bouton log out
         JButton button_logout = chatView.getButton_logout();
-        UseMouse(button_logout);
-        button_logout.addMouseListener(new MouseAdapter() {
+        UseMouse1(button_logout);
+        button_logout.addActionListener(new ActionListener() {
             @Override
-            public void mousePressed(MouseEvent e) {
-                //Remettre page log in
-            }
-
-            public void mouseEntered(MouseEvent e) {
-                button_logout.setForeground(Color.WHITE);
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button_logout.setForeground(Color.BLACK);// Rétablir la couleur de fond par défaut du bouton
+            public void actionPerformed(ActionEvent e) {
+                chatView.setVisible(false);
+                LoginControl loginControl = new LoginControl(new LoginView());
+                loginControl.initialize();
             }
         });
 
+        //Bouton reporting
         JButton button_reporting = chatView.getButton_reporting();
+        UseMouse1(button_reporting);
         button_reporting.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Afficher report
-            }
-
-            public void mouseEntered(MouseEvent e) {
-                button_reporting.setForeground(Color.WHITE);
-            }
-
-            public void mouseExited(MouseEvent e) {
-                button_reporting.setForeground(Color.BLACK);
+                try {
+                    if(UserDaoImpl.getRole(clientUser.getUsername()).equals("Administrator")){
+                        ReportView reportView = null;
+                        reportView = new ReportView();
+                        reportView.setVisible(true);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "NOT ALLOWED BECAUSE YOU ARE NOT AN ADMINISTRATOR ...");
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -193,8 +165,6 @@ public class ChatControl extends IOException {
         startClient();
         startReading(cName);
     }
-
-
 
     public static void startClient() {
         try {
@@ -301,45 +271,14 @@ public class ChatControl extends IOException {
         return messagePanel;
     }
 
-    public void UseMouse(JButton button){
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
-            }
-
-            public void mouseEntered(MouseEvent e) {
-                button.setBackground(new Color(0, 245, 212));
-                button.setOpaque(true);
-                button.setBorder(null); // Changer la couleur de fond du bouton en rouge
-            }
-
-
-            public void mouseExited(MouseEvent e) {
-                button.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
-            }
-        });
-    }
 
     public void UseMouse1(JButton button) {
         button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //Afficher page chat
-                //Mettre la couleur du bouton en bleu pour dire qu'on es dessus
+            public void mouseEntered(MouseEvent e) {
+                button.setForeground(Color.WHITE);
             }
-
-            /*public void mouseEntered(MouseEvent e) {
-                //g.setColor(new Color(0, 245, 212));
-                //g.fillRoundRect(5, 100, 140, 50, 30, 30);
-                button_chat.setBackground(new Color(0, 245, 212));
-                button_chat.setOpaque(true);
-                button_chat.setBorder(null); // Changer la couleur de fond du bouton en rouge
-            }*/
-
             public void mouseExited(MouseEvent e) {
-                button.setBackground(UIManager.getColor("Button.background"));// Rétablir la couleur de fond par défaut du bouton
+                button.setForeground(Color.BLACK);
             }
         });
     }
