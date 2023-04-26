@@ -2,10 +2,9 @@ package View;
 
 import Controller.ChatControl;
 import Controller.LoginControl;
-import Controller.Settings;
+import Controller.SettingsControl;
 import Model.Client;
 import Dao.*;
-import Model.ReportView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -24,7 +23,11 @@ public class UsersAdminView extends JFrame{
     private static boolean isAdmin = false;
     private static boolean isModo = false;
     private static boolean isUser = false;
-
+    private JButton button_chat = new JButton("Chat");
+    private JButton button_users = new JButton("Users");
+    private JButton button_settings = new JButton("Settings");
+    private JButton button_logout = new JButton("Log out");
+    private JButton button_reporting = new JButton("Reporting");
     private Client clientUser;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
 
@@ -36,6 +39,26 @@ public class UsersAdminView extends JFrame{
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public JButton getButton_chat() {
+        return button_chat;
+    }
+
+    public JButton getButton_users() {
+        return button_users;
+    }
+
+    public JButton getButton_settings() {
+        return button_settings;
+    }
+
+    public JButton getButton_logout() {
+        return button_logout;
+    }
+
+    public JButton getButton_reporting() {
+        return button_reporting;
     }
 
     public UsersAdminView() throws IOException, FontFormatException, SQLException {
@@ -109,7 +132,6 @@ public class UsersAdminView extends JFrame{
 
         //Boutons
         //Bouton chat
-        JButton button_chat = new JButton("Chat");
         button_chat.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_chat.setBackground(new Color(0, 0, 0, 0));
         button_chat.setBorder(null);
@@ -138,7 +160,6 @@ public class UsersAdminView extends JFrame{
         });
 
         //Bouton users
-        JButton button_users = new JButton("Users");
         button_users.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_users.setOpaque(false);
         button_users.setContentAreaFilled(false);
@@ -155,7 +176,6 @@ public class UsersAdminView extends JFrame{
         });
 
         //Bouton settings
-        JButton button_settings = new JButton("Settings");
         button_settings.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_settings.setBackground(new Color(0, 0, 0, 0));
         button_settings.setBorder(null);
@@ -163,15 +183,17 @@ public class UsersAdminView extends JFrame{
         button_settings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Settings f1 = null;
                 try {
-                    f1 = new Settings(clientUser);
-                } catch (IOException | FontFormatException | SQLException ex) {
+                    SettingsView settingsView = new SettingsView(UserDaoImpl.getFirstName(clientUser.getUsername()), UserDaoImpl.getLastName(clientUser.getUsername()), clientUser.getUsername(), String.valueOf(UserDaoImpl.getLastTimeConnection(clientUser.getUsername())), String.valueOf(UserDaoImpl.countUserMessages(clientUser.getUsername())), String.valueOf(UserDaoImpl.getRole(clientUser.getUsername())));
+                    SettingsControl settingsControl = new SettingsControl(settingsView, clientUser);
+                    settingsControl.initializeSettingsView();
+                } catch (IOException | FontFormatException ex) {
+                    throw new RuntimeException(ex);
+                } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-                f1.setVisible(true);
             }
-        });
+            });
         button_settings.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
                 button_settings.setForeground(Color.WHITE);
@@ -183,7 +205,6 @@ public class UsersAdminView extends JFrame{
         });
 
         //Bouton log out
-        JButton button_logout = new JButton("Log out");
         button_logout.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_logout.setBackground(new Color(0, 0, 0, 0));
         button_logout.setBorder(null);
@@ -213,7 +234,6 @@ public class UsersAdminView extends JFrame{
         });
 
         //Bouton reporting
-        JButton button_reporting = new JButton("Reporting");
         button_reporting.setFont(urbanist.deriveFont(Font.BOLD, 19));
         button_reporting.setBackground(new Color(0, 0, 0, 0));
         button_reporting.setBorder(null);

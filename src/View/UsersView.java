@@ -2,10 +2,9 @@ package View;
 
 import Controller.ChatControl;
 import Controller.LoginControl;
-import Controller.Settings;
+import Controller.SettingsControl;
 import Dao.*;
 import Model.Client;
-import Model.ReportView;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -21,6 +20,11 @@ import java.sql.SQLException;
 public class UsersView extends JFrame{
     private static boolean isBan = false;
     private static boolean isUban = false;
+    private JButton button_chat = new JButton("Chat");
+    private JButton button_users = new JButton("Users");
+    private JButton button_settings = new JButton("Settings");
+    private JButton button_logout = new JButton("Log out");
+    private JButton button_reporting = new JButton("Reporting");
 
     public Client getClientUser() {
         return clientUser;
@@ -28,6 +32,26 @@ public class UsersView extends JFrame{
 
     private Client clientUser;
     private ChatView chatView;
+
+    public JButton getButton_chat() {
+        return button_chat;
+    }
+
+    public JButton getButton_users() {
+        return button_users;
+    }
+
+    public JButton getButton_settings() {
+        return button_settings;
+    }
+
+    public JButton getButton_logout() {
+        return button_logout;
+    }
+
+    public JButton getButton_reporting() {
+        return button_reporting;
+    }
 
     public UsersView() throws IOException, FontFormatException, SQLException {
 
@@ -157,13 +181,13 @@ public class UsersView extends JFrame{
         button_settings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Settings f1 = null;
                 try {
-                    f1 = new Settings(getClientUser());
-                } catch (IOException | FontFormatException | SQLException ex) {
+                    SettingsView settingsView = new SettingsView(UserDaoImpl.getFirstName(clientUser.getUsername()), UserDaoImpl.getLastName(clientUser.getUsername()), clientUser.getUsername(), String.valueOf(UserDaoImpl.getLastTimeConnection(clientUser.getUsername())), String.valueOf(UserDaoImpl.countUserMessages(clientUser.getUsername())), String.valueOf(UserDaoImpl.getRole(clientUser.getUsername())));
+                    SettingsControl settingsControl = new SettingsControl(settingsView, clientUser);
+                    settingsControl.initializeSettingsView();
+                } catch (SQLException | IOException | FontFormatException ex) {
                     throw new RuntimeException(ex);
                 }
-                f1.setVisible(true);
             }
         });
         button_settings.addMouseListener(new MouseAdapter() {
@@ -210,8 +234,7 @@ public class UsersView extends JFrame{
             public void mousePressed(MouseEvent e) {
                 try {
                     if(UserDaoImpl.getRole(clientUser.getUsername()).equals("Administrator")){
-                        ReportView reportView = null;
-                        reportView = new ReportView();
+                        ReportView reportView = new ReportView();
                         reportView.setVisible(true);
                     }
                     else {

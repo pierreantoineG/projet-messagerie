@@ -25,7 +25,7 @@ public class ChatControl extends IOException {
     private static Socket client;
     private static PrintWriter out;
     private static BufferedReader in;
-    private static String addIp = "192.168.1.14";
+    private static String addIp = "localhost";
     private static int numPort = 1000;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
@@ -81,29 +81,29 @@ public class ChatControl extends IOException {
                 try {
                     String role = UserDaoImpl.getRole(clientUser.getUsername());
                     if(role.equals("Administrator")){
-                        /*UsersView usersView = new UsersView();
-                        UsersControl usersControl = new UsersControl(usersView, clientUser);
-                        usersControl.initializeUsersView(clientUser.getUsername());*/
-                        UsersAdminView usersAdminView = null;
+                        UsersAdminView usersAdminViewView = new UsersAdminView();
+                        UsersAdminControl usersAdminControl = new UsersAdminControl(usersAdminViewView, clientUser);
+                        usersAdminControl.initializeUsersView(clientUser.getUsername());
+                        /*UsersAdminView usersAdminView = null;
                         usersAdminView = new UsersAdminView();
-                        usersAdminView.setVisible(true);
+                        usersAdminView.setVisible(true);*/
 
                     }
                     else if(role.equals("Moderator")){
-                        /*UsersModeratorView usersModeratorView = new UsersModeratorView();
+                        UsersModeratorView usersModeratorView = new UsersModeratorView();
                         UsersModeratorControl usersModeratorControl = new UsersModeratorControl(usersModeratorView, clientUser);
-                        usersModeratorControl.initializeUsersView(clientUser.getUsername());*/
-                        UsersModeratorView usersModeratorView = null;
+                        usersModeratorControl.initializeUsersView(clientUser.getUsername());
+                        /*UsersModeratorView usersModeratorView = null;
                         usersModeratorView = new UsersModeratorView();
-                        usersModeratorView.setVisible(true);
+                        usersModeratorView.setVisible(true);*/
                     }
                     else if(role.equals("User")){
-                        /*UsersView usersView = new UsersView();
+                        UsersView usersView = new UsersView();
                         UsersControl usersControl = new UsersControl(usersView, clientUser);
-                        usersControl.initializeUsersView(clientUser.getUsername());*/
-                        UsersView usersView = null;
+                        usersControl.initializeUsersView(clientUser.getUsername());
+                        /*UsersView usersView = null;
                         usersView = new UsersView();
-                        usersView.setVisible(true);
+                        usersView.setVisible(true);*/
                     }
                 } catch (SQLException | IOException | FontFormatException ex) {
                     throw new RuntimeException(ex);
@@ -119,9 +119,11 @@ public class ChatControl extends IOException {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Settings settings = new Settings(clientUser);
-                    settings.initializeSettings();
-                } catch (SQLException | IOException | FontFormatException ex) {
+                    SettingsView settingsView = new SettingsView(UserDaoImpl.getFirstName(clientUser.getUsername()), UserDaoImpl.getLastName(clientUser.getUsername()), clientUser.getUsername(), String.valueOf(UserDaoImpl.getLastTimeConnection(clientUser.getUsername())), String.valueOf(UserDaoImpl.countUserMessages(clientUser.getUsername())), String.valueOf(UserDaoImpl.getRole(clientUser.getUsername())));
+                    SettingsControl settingsControl = new SettingsControl(settingsView, clientUser);
+                    settingsControl.initializeSettingsView();
+                    chatView.setVisible(false);
+                } catch (IOException | FontFormatException | SQLException ex) {
                     throw new RuntimeException(ex);
                 }
             }

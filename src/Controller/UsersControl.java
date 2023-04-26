@@ -1,10 +1,9 @@
-/*
 package Controller;
 
 
+import Dao.UserDaoImpl;
 import Model.Client;
-import View.ChatView;
-import View.UsersView;
+import View.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +42,13 @@ public class UsersControl {
         button_chat.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Afficher page chat
+                try {
+                    usersView.setVisible(false);
+                    ChatView chatView = new ChatView();
+                    chatView.setVisible(true);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             public void mouseEntered(MouseEvent e) {
@@ -78,8 +83,9 @@ public class UsersControl {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Settings settings = new Settings(clientUser);
-                    settings.initializeSettings();
+                    usersView.setVisible(false);
+                    SettingsView settingsView = new SettingsView(UserDaoImpl.getFirstName(clientUser.getUsername()), UserDaoImpl.getLastName(clientUser.getUsername()), clientUser.getUsername(), String.valueOf(UserDaoImpl.getLastTimeConnection(clientUser.getUsername())), String.valueOf(UserDaoImpl.countUserMessages(clientUser.getUsername())), String.valueOf(UserDaoImpl.getRole(clientUser.getUsername())));
+                    settingsView.setVisible(true);
                 } catch (SQLException | IOException | FontFormatException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -99,7 +105,9 @@ public class UsersControl {
         button_logout.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Remettre la page du log in
+                usersView.setVisible(false);
+                LoginView loginView = new LoginView();
+                loginView.setVisible(true);
             }
 
             public void mouseEntered(MouseEvent e) {
@@ -116,7 +124,7 @@ public class UsersControl {
         button_reporting.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Afficher report
+                ReportView reportView = new ReportView();
             }
 
             public void mouseEntered(MouseEvent e) {
@@ -131,6 +139,5 @@ public class UsersControl {
         usersView.setVisible(true);
     }
 }
- */
 
 

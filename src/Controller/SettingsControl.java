@@ -21,7 +21,7 @@ public class SettingsControl extends JFrame{
     }
 
     public void initializeSettingsView(){
-        /*JLabel lbl_icon_edit = settingsView.getLbl_icon_edit();
+        JLabel lbl_icon_edit = settingsView.getLbl_icon_edit();
         lbl_icon_edit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -37,8 +37,8 @@ public class SettingsControl extends JFrame{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                fname.setEditable(true);
-                fname.setPreferredSize(new Dimension(100, 30));
+                settingsView.getFname().setEditable(true);
+                settingsView.getFname().setPreferredSize(new Dimension(100, 30));
             }
         });
 
@@ -46,7 +46,7 @@ public class SettingsControl extends JFrame{
         lbl_icon_edit1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                lbl_icon_edit1.setIcon(settingsView.getImg_icon_edit_white_1());
+                lbl_icon_edit1.setIcon(settingsView.getImg_icon_edit_white());
                 lbl_icon_edit1.repaint();
             }
 
@@ -58,8 +58,8 @@ public class SettingsControl extends JFrame{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                lname.setEditable(true);
-                lname.setPreferredSize(new Dimension(100, 30));
+                settingsView.getLname().setEditable(true);
+                settingsView.getLname().setPreferredSize(new Dimension(100, 30));
             }
         });
 
@@ -80,8 +80,8 @@ public class SettingsControl extends JFrame{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                handle.setEditable(true);
-                handle.setPreferredSize(new Dimension(100, 30));
+                settingsView.getHandle().setEditable(true);
+                settingsView.getHandle().setPreferredSize(new Dimension(100, 30));
             }
         });
 
@@ -102,13 +102,13 @@ public class SettingsControl extends JFrame{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                fname.setEditable(false);
+                settingsView.getFname().setEditable(false);
                 try {
-                    fname.setText(UserDaoImpl.getFirstName(clientUser.getUsername()));
+                    settingsView.getFname().setText(UserDaoImpl.getFirstName(clientUser.getUsername()));
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-                fname.setPreferredSize(new Dimension(100, 30));
+                settingsView.getFname().setPreferredSize(new Dimension(100, 30));
             }
         });
 
@@ -128,13 +128,13 @@ public class SettingsControl extends JFrame{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                lname.setEditable(false);
+                settingsView.getLname().setEditable(false);
                 try {
-                    lname.setText(UserDaoImpl.getLastName(clientUser.getUsername()));
+                    settingsView.getLname().setText(UserDaoImpl.getLastName(clientUser.getUsername()));
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
-                lname.setPreferredSize(new Dimension(100, 30));
+                settingsView.getLname().setPreferredSize(new Dimension(100, 30));
             }
         });
 
@@ -155,9 +155,9 @@ public class SettingsControl extends JFrame{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                handle.setEditable(false);
-                handle.setText(clientUser.getUsername());
-                handle.setPreferredSize(new Dimension(100, 30));
+                settingsView.getHandle().setEditable(false);
+                settingsView.getHandle().setText(clientUser.getUsername());
+                settingsView.getHandle().setPreferredSize(new Dimension(100, 30));
             }
         });
 
@@ -178,8 +178,8 @@ public class SettingsControl extends JFrame{
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    UserDaoImpl.updateUserFirstName(clientUser.getUsername(), fname.getText());
-                    fname.setEditable(false);
+                    UserDaoImpl.updateUserFirstName(clientUser.getUsername(), settingsView.getFname().getText());
+                    settingsView.getFname().setEditable(false);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -202,23 +202,22 @@ public class SettingsControl extends JFrame{
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (lname.getText().equals(" ")) {
+                if (settingsView.getLname().getText().equals(" ")) {
                     try {
-                        lname.setText(UserDaoImpl.getLastName(clientUser.getUsername()));
+                        settingsView.getLname().setText(UserDaoImpl.getLastName(clientUser.getUsername()));
                     } catch (SQLException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
-                lname.setEditable(false);
+                settingsView.getLname().setEditable(false);
                 try {
-                    UserDaoImpl.updateUserLastName(clientUser.getUsername(), lname.getText());
+                    UserDaoImpl.updateUserLastName(clientUser.getUsername(), settingsView.getLname().getText());
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
             }
         });
 
-        */
         JButton lbl_away = settingsView.getLbl_away();
         lbl_away.addActionListener(new ActionListener() {
             @Override
@@ -259,7 +258,14 @@ public class SettingsControl extends JFrame{
         button_chat.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Afficher page chat
+                settingsView.setVisible(false);
+                ChatView chatView;
+                try {
+                    chatView = new ChatView();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+                chatView.setVisible(true);
             }
 
             public void mouseEntered(MouseEvent e) {
@@ -304,7 +310,9 @@ public class SettingsControl extends JFrame{
         button_logout.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Remettre la page du log in
+                settingsView.setVisible(false);
+                LoginView loginView = new LoginView();
+                loginView.setVisible(true);
             }
 
             public void mouseEntered(MouseEvent e) {
@@ -321,7 +329,7 @@ public class SettingsControl extends JFrame{
         button_reporting.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Afficher report
+                ReportView reportView = new ReportView();
             }
 
             public void mouseEntered(MouseEvent e) {
@@ -336,9 +344,4 @@ public class SettingsControl extends JFrame{
         settingsView.setVisible(true);
 
     }
-
-    public static void afficher() throws SQLException {
-        SettingsView.displaySettingsInfo(UserDaoImpl.getFirstName(clientUser.getUsername()), UserDaoImpl.getLastName(clientUser.getUsername()), clientUser.getUsername(), String.valueOf(UserDaoImpl.getLastTimeConnection(clientUser.getUsername())), String.valueOf(UserDaoImpl.countUserMessages(clientUser.getUsername())), String.valueOf(UserDaoImpl.getRole(clientUser.getUsername())), clientUser);
-    }
-
 }

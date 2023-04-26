@@ -34,7 +34,7 @@ public class SettingsView extends JFrame{
     private static ImageIcon img_icon_edit_white;
     private static ImageIcon img_icon_edit1;
     private static ImageIcon img_icon_edit_white_1;
-    private static JLabel lbl_icon_edit1;
+    private JLabel lbl_icon_edit1;
     private static ImageIcon img_icon_edit2;
     private static ImageIcon img_icon_edit_white_2;
     private static JLabel lbl_icon_edit2;
@@ -56,9 +56,16 @@ public class SettingsView extends JFrame{
     private static ImageIcon img_icon_validate2;
     private static ImageIcon img_icon_validate_white_2;
     private static JLabel lbl_icon_validate2;
+
+    private JTextField handle;
+    private JTextField fname;
+    private JTextField lname;
+    private JLabel activeSince;
+    private JLabel statut;
+    private JLabel messages;
     private JButton button_chat = new JButton("Chat");
     private JButton button_users = new JButton("Users");
-    private JButton button_settings = new JButton("Controller.Settings");
+    private JButton button_settings = new JButton("Settings");
     private JButton button_logout = new JButton("Log out");
     private JButton button_reporting = new JButton("Reporting");
 
@@ -71,6 +78,30 @@ public class SettingsView extends JFrame{
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public JTextField getHandle() {
+        return handle;
+    }
+
+    public JTextField getFname() {
+        return fname;
+    }
+
+    public JTextField getLname() {
+        return lname;
+    }
+
+    public JLabel getActiveSince() {
+        return activeSince;
+    }
+
+    public JLabel getStatut() {
+        return statut;
+    }
+
+    public JLabel getMessages() {
+        return messages;
     }
 
     public JLabel getLbl_icon_edit() {
@@ -222,7 +253,7 @@ public class SettingsView extends JFrame{
         isOnline = online;
     }
 
-    public SettingsView() throws IOException, FontFormatException, SQLException {
+    public SettingsView(String firstName, String lastName, String pseudo, String date, String nbMsg, String userStatut) throws IOException, FontFormatException, SQLException {
 
 
         setSize(1000, 680);
@@ -252,6 +283,7 @@ public class SettingsView extends JFrame{
         //Image icon log out
         ImageIcon img_icon_logout = new ImageIcon("Icons/icon_logout.png");
         JLabel lbl_icon_logout = new JLabel(new ImageIcon(img_icon_logout.getImage()));
+
 
 
         //Image icon editer
@@ -310,6 +342,44 @@ public class SettingsView extends JFrame{
         lbl_fname.setFont(urbanist.deriveFont(Font.BOLD, 20));
         lbl_fname.setHorizontalAlignment(SwingConstants.CENTER);
 
+        this.fname = new JTextField(firstName);
+        fname.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        fname.setBorder(null);
+        fname.setOpaque(false);
+        fname.setBackground(new Color(0, 0, 0, 0));
+
+        this.lname= new JTextField(lastName);
+        lname.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        lname.setBorder(null);
+        lname.setOpaque(false);
+        lname.setBackground(new Color(0, 0, 0, 0));
+
+        this.handle = new JTextField(pseudo);
+        handle.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        handle.setBorder(null);
+        handle.setOpaque(false);
+        handle.setBackground(new Color(0, 0, 0, 0));
+
+        this.activeSince = new JLabel(date);
+        activeSince.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        activeSince.setBorder(null);
+        activeSince.setOpaque(false);
+        activeSince.setBackground(new Color(0, 0, 0, 0));
+
+        this.messages = new JLabel(nbMsg);
+        messages.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        messages.setBorder(null);
+        messages.setOpaque(false);
+        messages.setBackground(new Color(0, 0, 0, 0));
+
+        this.statut = new JLabel(userStatut);
+        statut.setFont(urbanist.deriveFont(Font.BOLD, 20));
+        statut.setBorder(null);
+        statut.setOpaque(false);
+        statut.setBackground(new Color(0, 0, 0, 0));
+
+
+
         //Texte 3
         JLabel lbl_lname = new JLabel("Last name ");
         lbl_lname.setFont(urbanist.deriveFont(Font.BOLD, 20));
@@ -347,7 +417,6 @@ public class SettingsView extends JFrame{
         button_chat.setBorder(null);
         button_chat.setContentAreaFilled(false);
         button_chat.setOpaque(false);
-
 
 
         //Bouton users
@@ -534,6 +603,13 @@ public class SettingsView extends JFrame{
         panel_chat.add(lbl_icon_settings);
         panel_chat.add(lbl_icon_logout);
 
+        panel_chat.add(fname);
+        panel_chat.add(lname);
+        panel_chat.add(handle);
+        panel_chat.add(activeSince);
+        panel_chat.add(messages);
+        panel_chat.add(statut);
+
 
         //TODO Définir les contraintes pour chaque composant pour le contentPanel uniquement
         SpringLayout contentLayout = (SpringLayout) panel_chat.getLayout();
@@ -570,6 +646,28 @@ public class SettingsView extends JFrame{
 
         contentLayout.putConstraint(SpringLayout.NORTH, lbl_away, 71, SpringLayout.NORTH, lbl_state);
         contentLayout.putConstraint(SpringLayout.WEST, lbl_away, 145, SpringLayout.WEST, lbl_online);
+
+
+        //TODO Ajout des JText Field et JText pour les infos du User --------------------------------------
+        contentLayout.putConstraint(SpringLayout.NORTH, fname, 140, SpringLayout.NORTH, panel_chat);
+        contentLayout.putConstraint(SpringLayout.WEST, fname, 267, SpringLayout.WEST, lbl_fname);
+        //lname
+        contentLayout.putConstraint(SpringLayout.NORTH, lname, 80, SpringLayout.NORTH, fname);
+        contentLayout.putConstraint(SpringLayout.WEST, lname, 250, SpringLayout.WEST, lbl_lname);
+        //Handle
+        contentLayout.putConstraint(SpringLayout.NORTH, handle, 80, SpringLayout.NORTH, lname);
+        contentLayout.putConstraint(SpringLayout.WEST, handle, 250, SpringLayout.WEST, lbl_handle1);
+        //active since
+        contentLayout.putConstraint(SpringLayout.NORTH, activeSince, 80, SpringLayout.NORTH, handle);
+        contentLayout.putConstraint(SpringLayout.WEST, activeSince, 208, SpringLayout.WEST, lbl_active_since);
+        //messages
+        contentLayout.putConstraint(SpringLayout.NORTH, messages, 80, SpringLayout.NORTH, activeSince);
+        contentLayout.putConstraint(SpringLayout.WEST, messages, 285, SpringLayout.WEST, lbl_messages);
+        //statut
+        contentLayout.putConstraint(SpringLayout.NORTH, statut, 80, SpringLayout.NORTH, messages);
+        contentLayout.putConstraint(SpringLayout.WEST, statut, 223, SpringLayout.WEST, lbl_status_1);
+        //TODO -------------------------------------------------------------------------------------------
+
 
 
 //TODO FAIRE COMME LA LIGNE D EN DESSOUS POUR RECUPERER LES INFOS SOIT DE LA BDD SOIT DU REGISTER
@@ -639,7 +737,7 @@ public class SettingsView extends JFrame{
         add(panel_chat);
     }
 
-    public static void displaySettingsInfo(String name, String lastname, String username, String date, String message, String status, Client client){
+    /*public static void displaySettingsInfo(String name, String lastname, String username, String date, String message, String status, Client client){
         JTextField labelName = new JTextField(name);
         JTextField labelSurname = new JTextField(lastname);
         JTextField labelUser = new JTextField(username);
@@ -925,7 +1023,7 @@ public class SettingsView extends JFrame{
         //statut
         layoutPanel.putConstraint(SpringLayout.NORTH, labelStatus, 80, SpringLayout.NORTH, labelMessage);
         layoutPanel.putConstraint(SpringLayout.WEST, labelStatus, 223, SpringLayout.WEST, lbl_statut);
-    }
+    }*/
 }
 
 

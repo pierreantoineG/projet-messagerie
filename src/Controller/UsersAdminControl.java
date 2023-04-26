@@ -1,6 +1,9 @@
-/*package Controller;
+package Controller;
 
+import Dao.UserDaoImpl;
 import Model.Client;
+import View.ReportView;
+import View.SettingsView;
 import View.UsersAdminView;
 import View.UsersView;
 
@@ -75,8 +78,9 @@ public class UsersAdminControl {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Settings settings = new Settings(clientUser);
-                    settings.initializeSettings();
+                    SettingsView settingsView = new SettingsView(UserDaoImpl.getFirstName(clientUser.getUsername()), UserDaoImpl.getLastName(clientUser.getUsername()), clientUser.getUsername(), String.valueOf(UserDaoImpl.getLastTimeConnection(clientUser.getUsername())), String.valueOf(UserDaoImpl.countUserMessages(clientUser.getUsername())), String.valueOf(UserDaoImpl.getRole(clientUser.getUsername())));
+                    SettingsControl settingsControl = new SettingsControl(settingsView, clientUser);
+                    settingsControl.initializeSettingsView();
                 } catch (SQLException | IOException | FontFormatException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -113,7 +117,18 @@ public class UsersAdminControl {
         button_reporting.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                //Afficher report
+                try {
+                    if(UserDaoImpl.getRole(clientUser.getUsername()).equals("Administrator")){
+                        ReportView reportView = null;
+                        reportView = new ReportView();
+                        reportView.setVisible(true);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "NOT ALLOWED BECAUSE YOU ARE NOT AN ADMINISTRATOR ...");
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             public void mouseEntered(MouseEvent e) {
@@ -125,9 +140,10 @@ public class UsersAdminControl {
             }
         });
 
+
         usersAdminView.setVisible(true);
     }
 }
-*/
+
 
 

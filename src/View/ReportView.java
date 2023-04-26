@@ -1,4 +1,4 @@
-package Model;
+package View;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
