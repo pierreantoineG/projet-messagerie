@@ -52,7 +52,7 @@ public class UserDaoImpl implements UserDao {
         }
     }
     public static void checkAndBanUser(String username, String content) throws SQLException {
-        String[] forbiddenWords = {"putain", "merde", "enculé", "connard", "salope", "pédé", "gueule",
+        String[] forbiddenWords = {"putain", "merde", "enculé", "connard", "salope", "pédé", "gueule", "pute",
                 "trou du cul", "foutre", "bite", "cul", "nique ta mère", "va te faire foutre", "sale race",
                 "sale juif", "sale noir", "sale arabe", "sale chinois", "sale pédé", "sale gouine", "suce ma bite",
                 "bougnoule", "tapette", "PD", "juif", "nègre", "enculer", "pétasse", "enfoiré", "putassier", "sa race",
@@ -73,6 +73,7 @@ public class UserDaoImpl implements UserDao {
         for (String word : forbiddenWords) {
             if (content.contains(word)) {
                 banUser(username, true);
+                JOptionPane.showMessageDialog(null, "our are not allowed to say "+content);
                 break;
             }
         }

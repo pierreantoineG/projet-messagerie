@@ -28,7 +28,7 @@ public class ChatControl extends IOException {
     private static Socket client;
     private static PrintWriter out;
     private static BufferedReader in;
-    private static String addIp = "localhost";
+    private static String addIp = "192.168.1.14";
     private static int numPort = 1000;
     static File font = new File("Font/Urbanist (font)/static/Urbanist-Medium.ttf");
     static Font urbanist;
